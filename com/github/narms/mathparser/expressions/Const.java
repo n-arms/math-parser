@@ -2,12 +2,17 @@ package com.github.narms.mathparser.expressions;
 
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
+import com.github.narms.mathparser.Token;
 
 public class Const extends ExpressionSyntax {
+    private double value;
+    public Const(Token t){
+        this.value = Double.parseDouble(t.getValue());
+    }
 
     @Override
     public double eval() {
-        return 0;
+        return this.value;
     }
 
     @Override
@@ -22,12 +27,12 @@ public class Const extends ExpressionSyntax {
 
     @Override
     public String toString() {
-        return null;
+        return String.valueOf(this.value);
     }
 
     @Override
     public SyntaxType getType() {
-        return null;
+        return SyntaxType.CONSTEXPR;
     }
     
 }
