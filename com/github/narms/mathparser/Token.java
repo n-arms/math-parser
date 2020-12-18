@@ -4,7 +4,7 @@ enum TokenType{
     NUM, SYM, OP;
 }
 
-public class Token {
+public class Token extends Syntax{
     private SyntaxType type;
     private String value;
     private static char[] numbers = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'};
@@ -18,7 +18,7 @@ public class Token {
     public void addChar(char c){
         this.value+=c;
     }
-
+    
     public SyntaxType getType(char c){
         for (char i: Token.numbers){
             if (i==c){
@@ -41,7 +41,7 @@ public class Token {
     public void setType(){
         this.type = getType(this.value.charAt(0));
     }
-
+    @Override
     public SyntaxType getType(){
         return this.type;
     }
