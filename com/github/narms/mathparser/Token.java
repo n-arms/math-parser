@@ -5,7 +5,7 @@ enum TokenType{
 }
 
 public class Token {
-    private TokenType type;
+    private SyntaxType type;
     private String value;
     private static char[] numbers = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'};
     private static char[] operators = {'+', '-'};
@@ -19,20 +19,20 @@ public class Token {
         this.value+=c;
     }
 
-    public TokenType getType(char c){
+    public SyntaxType getType(char c){
         for (char i: Token.numbers){
             if (i==c){
-                return TokenType.NUM;
+                return SyntaxType.NUMTOKEN;
             }
         }
         for (char i: Token.operators){
             if (i==c){
-                return TokenType.OP;
+                return SyntaxType.OPTOKEN;
             }
         }
         for (char i: Token.symbol){
             if (i==c){
-                return TokenType.SYM;
+                return SyntaxType.SYMTOKEN;
             }
         }
         throw new IllegalArgumentException();
@@ -42,7 +42,7 @@ public class Token {
         this.type = getType(this.value.charAt(0));
     }
 
-    public TokenType getType(){
+    public SyntaxType getType(){
         return this.type;
     }
 
@@ -51,18 +51,14 @@ public class Token {
     }
 
     public boolean matchType(char c){
-        //try{
-            if (this.type == TokenType.OP){
-                return false;
-            }
-            if (this.type == null){
-                return true;
-            }
-            return getType(c).equals(this.type);
-            
-        //}catch(NullPointerException e){
-            //return true;
-        //}
+        if (this.type == SyntaxType.OPTOKEN){
+            return false;
+        }
+        if (this.type == null){
+            return true;
+        }
+        return getType(c).equals(this.type);
+
         
         
         
