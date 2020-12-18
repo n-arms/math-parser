@@ -1,10 +1,10 @@
 package com.github.narms.mathparser;
+import com.github.narms.mathparser.expressions.*;
 
 public class Test{
     public static void main(String[] args){
-        Lexer l = new Lexer("0.3+1.14-903");
-        for (Token t: l.lex()){
-            System.out.println(t.getValue()+": "+t.getType());
-        }
+        ExpressionSyntax tree = new BinOp("+", new Const(5), new BinOp("-", new Const(10), new Const(3)));
+        System.out.println(tree);
+        System.out.println(tree.eval());
     }
 }

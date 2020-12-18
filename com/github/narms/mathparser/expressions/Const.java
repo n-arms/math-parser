@@ -9,6 +9,9 @@ public class Const extends ExpressionSyntax {
     public Const(Token t){
         this.value = Double.parseDouble(t.getValue());
     }
+    public Const(double d){
+        this.value = d;
+    }
 
     @Override
     public double eval() {
