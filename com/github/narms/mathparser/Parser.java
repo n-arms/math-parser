@@ -3,6 +3,7 @@ package com.github.narms.mathparser;
 import java.util.ArrayList;
 
 import com.github.narms.mathparser.expressions.BinOp;
+import com.github.narms.mathparser.expressions.Const;
 
 public class Parser {
     public static ArrayList<Syntax> parseTerm(ArrayList<Syntax> structure){
@@ -16,10 +17,20 @@ public class Parser {
                     ((ExpressionSyntax)output.get(i+1))));
                     output.remove(i+1);
                     output.remove(i-1);
-
                 }
                 else{i++;}
             }else{i++;}
+        }
+        return output;
+    }
+    public static ArrayList<Syntax> parseLiteral(ArrayList<Syntax> structure){
+        ArrayList<Syntax> output = structure;
+        for (Syntax s: structure){
+            if (s instanceof Token){
+                if (((Token)s).getType().equals(SyntaxType.NUMTOKEN)){
+                    output.set(structure.indexOf(s), new Const((Token)output.get(structure.indexOf(s))));
+                }
+            }
         }
         return output;
     }

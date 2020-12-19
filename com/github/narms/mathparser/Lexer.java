@@ -3,24 +3,24 @@ package com.github.narms.mathparser;
 import java.util.ArrayList;
 
 public class Lexer {
-    private ArrayList<Token> tokens;
+    private ArrayList<Syntax> tokens;
     private char[] input;
     public Lexer(String input){
         this.input = input.toCharArray();
-        this.tokens = new ArrayList<Token>();
+        this.tokens = new ArrayList<Syntax>();
         this.tokens.add(new Token());
     }
 
-    public ArrayList<Token> lex(){
+    public ArrayList<Syntax> lex(){
         for (char c: this.input){
-            if (this.tokens.get(this.tokens.size()-1).matchType(c)){
-                this.tokens.get(this.tokens.size()-1).addChar(c);
-                this.tokens.get(this.tokens.size()-1).setType();
+            if (((Token)this.tokens.get(this.tokens.size()-1)).matchType(c)){
+                ((Token)this.tokens.get(this.tokens.size()-1)).addChar(c);
+                ((Token)this.tokens.get(this.tokens.size()-1)).setType();
             }
             else{
                 this.tokens.add(new Token());
-                this.tokens.get(this.tokens.size()-1).addChar(c);
-                this.tokens.get(this.tokens.size()-1).setType();
+                ((Token)this.tokens.get(this.tokens.size()-1)).addChar(c);
+                ((Token)this.tokens.get(this.tokens.size()-1)).setType();
             }
         }
         return this.tokens;
