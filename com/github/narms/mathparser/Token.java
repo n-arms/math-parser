@@ -11,6 +11,8 @@ public class Token extends Syntax{
     private String value;
     private static char[] numbers = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'};
     private static char[] operators = {'+', '-', '/', '*'};
+    private static char lpar = '(';
+    private static char rpar = ')';
     private static char[] symbol = {'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm'};
 
     public Token(){
@@ -37,6 +39,11 @@ public class Token extends Syntax{
                 return SyntaxType.SYMTOKEN;
             }
         }
+        if (c==Token.lpar){
+            return SyntaxType.LPARTOKEN;
+        }else if (c==Token.rpar){
+            return SyntaxType.RPARTOKEN;
+        }
         throw new LexerException("Illegal char: "+c);
     }
 
@@ -53,7 +60,7 @@ public class Token extends Syntax{
     }
 
     public boolean matchType(char c){
-        if (this.type == SyntaxType.OPTOKEN){
+        if (this.type == SyntaxType.OPTOKEN || this.type==SyntaxType.LPARTOKEN || this.type==SyntaxType.RPARTOKEN){
             return false;
         }
         if (this.type == null){
