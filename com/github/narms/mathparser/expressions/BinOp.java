@@ -20,6 +20,10 @@ public class BinOp extends ExpressionSyntax {
             return this.value1.eval() + this.value2.eval();
             case "-":
             return this.value1.eval() - this.value2.eval();
+            case "*":
+            return this.value1.eval() * this.value2.eval();
+            case "/":
+            return this.value1.eval() / this.value2.eval();
             default:
             throw new IllegalArgumentException();
         }

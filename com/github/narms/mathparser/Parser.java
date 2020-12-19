@@ -34,4 +34,21 @@ public class Parser {
         }
         return output;
     }
+    public static ArrayList<Syntax> parseFactor(ArrayList<Syntax> structure){
+        ArrayList<Syntax> output = structure;
+        int i = 0;
+        while (i<output.size()){
+            if (output.get(i) instanceof Token){
+                if (((Token)output.get(i)).getValue().equals("*") || ((Token)output.get(i)).getValue().equals("/")){
+                    output.set(i, new BinOp(((Token)output.get(i)).getValue(), 
+                    (ExpressionSyntax)output.get(i-1), 
+                    (ExpressionSyntax)output.get(i+1)));
+                    output.remove(i+1);
+                    output.remove(i-1);
+                }else{i++;}
+            }else{i++;}
+        }
+        return output;
+
+    }
 }
