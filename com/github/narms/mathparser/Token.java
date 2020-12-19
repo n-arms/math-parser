@@ -1,5 +1,7 @@
 package com.github.narms.mathparser;
 
+import com.github.narms.mathparser.exceptions.LexerException;
+
 enum TokenType{
     NUM, SYM, OP;
 }
@@ -35,7 +37,7 @@ public class Token extends Syntax{
                 return SyntaxType.SYMTOKEN;
             }
         }
-        throw new IllegalArgumentException();
+        throw new LexerException("Illegal char: "+c);
     }
 
     public void setType(){
@@ -62,5 +64,9 @@ public class Token extends Syntax{
         
         
         
+    }
+
+    public String toString(){
+        return "<"+this.type+", "+this.value+">";
     }
 }

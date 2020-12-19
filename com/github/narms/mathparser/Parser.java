@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.github.narms.mathparser.expressions.BinOp;
 import com.github.narms.mathparser.expressions.Const;
 
+import com.github.narms.mathparser.exceptions.ParserException;
+
 public class Parser {
     public static ArrayList<Syntax> parseTerm(ArrayList<Syntax> structure){
         int i = 0;
@@ -50,5 +52,15 @@ public class Parser {
         }
         return output;
 
+    }
+    public static Syntax parseText(ArrayList<Syntax> structure){
+        ArrayList<Syntax> output = structure;
+        output = Parser.parseLiteral(output);
+        output = Parser.parseFactor(output);
+        output = Parser.parseTerm(output);
+        if (output.size() != 1){
+            throw new ParserException("Parser couldn't reduce a 1 root tree");
+        }
+        return output.get(0);
     }
 }
