@@ -6,5 +6,4 @@ public class IllegalSyntaxException extends RuntimeException{
     public IllegalSyntaxException(String errorMessage){
         super(errorMessage);
     }
-    
 }

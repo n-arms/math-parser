@@ -48,11 +48,9 @@ public class Paren extends Syntax {
         for (Syntax s: rawContents){
             if (s instanceof Token){
                 if (s.getType().equals(SyntaxType.LPARTOKEN)){
-                    System.out.println("found opening");
                     parentheses++;
                 }
                 else if (s.getType().equals(SyntaxType.RPARTOKEN)){
-                    System.out.println("found closing");
                     parentheses--;
                 }
             }
