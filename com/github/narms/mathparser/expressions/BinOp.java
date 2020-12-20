@@ -30,6 +30,19 @@ public class BinOp extends ExpressionSyntax {
     }
 
     @Override
+    public ExpressionSyntax derivative(String variable){
+        if (this.operator.equals("+") || this.operator.equals("-")){
+            return new BinOp(this.operator, this.value1.derivative(variable), this.value2.derivative(variable));
+        }else if (this.operator.equals("*")){
+            return new BinOp("+", new BinOp("*", this.value1, this.value2.derivative(variable)), 
+            new BinOp("*", this.value2, this.value1.derivative(variable)));
+        }else if (this.operator.equals("/")){
+            return new BinOp("/", new BinOp("-", new BinOp("*", this.value1.derivative(variable), this.value2), new BinOp("*", this.value2.derivative(variable), this.value1)), new BinOp("*", this.value2, this.value2));
+        }
+        throw new IllegalArgumentException();
+    }
+
+    @Override
     public boolean hasVar(String name) {
         return this.value1.hasVar(name) || this.value2.hasVar(name);
     }
@@ -47,6 +60,11 @@ public class BinOp extends ExpressionSyntax {
     @Override
     public SyntaxType getType() {
         return SyntaxType.BINOPEXPR;
+    }
+
+    @Override
+    public ExpressionSyntax reduce(){
+        return null;
     }
     
 }

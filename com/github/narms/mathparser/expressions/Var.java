@@ -24,6 +24,14 @@ public class Var extends ExpressionSyntax {
     }
 
     @Override
+    public ExpressionSyntax derivative(String name){
+        if (this.name.equals(name)){
+            return new Const(1);
+        }
+        return new Const(0);
+    }
+
+    @Override
     public boolean hasVar(String name) {
         return this.name.equals(name);
     }
@@ -47,5 +55,10 @@ public class Var extends ExpressionSyntax {
     @Override
     public SyntaxType getType() {
         return SyntaxType.VAREXPR;
+    }
+
+    @Override
+    public ExpressionSyntax reduce(){
+        return this;
     }
 }

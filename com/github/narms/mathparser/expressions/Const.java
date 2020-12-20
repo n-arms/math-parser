@@ -19,6 +19,11 @@ public class Const extends ExpressionSyntax {
     }
 
     @Override
+    public ExpressionSyntax derivative(String name){
+        return new Const(0);
+    }
+
+    @Override
     public boolean hasVar(String name) {
         return false;
     }
@@ -36,6 +41,11 @@ public class Const extends ExpressionSyntax {
     @Override
     public SyntaxType getType() {
         return SyntaxType.CONSTEXPR;
+    }
+
+    @Override
+    public ExpressionSyntax reduce(){
+        return this;
     }
     
 }

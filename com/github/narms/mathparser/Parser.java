@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.github.narms.mathparser.expressions.BinOp;
 import com.github.narms.mathparser.expressions.Const;
 import com.github.narms.mathparser.expressions.Paren;
+import com.github.narms.mathparser.expressions.UnaryOp;
 import com.github.narms.mathparser.expressions.Var;
 import com.github.narms.mathparser.exceptions.ParserException;
 
@@ -78,10 +79,31 @@ public class Parser {
         }
         return output;
     }
+    public static ArrayList<Syntax> parseUnary(ArrayList<Syntax> structure){
+        int i = 1;
+        ArrayList<Syntax> output = structure;
+        if (output.get(0) instanceof Token){
+            if (((Token)output.get(0)).getValue().equals("+") || ((Token)output.get(0)).getValue().equals("-")){
+                output.set(0, new UnaryOp(((Token)output.get(0)).getValue(), (ExpressionSyntax)output.get(1)));
+                output.remove(1);
+            }
+        }
+
+        while (i<output.size()){
+            if (output.get(i-1) instanceof Token && output.get(i) instanceof Token){
+                if (((Token)output.get(i)).getValue().equals("+") || ((Token)output.get(i)).getValue().equals("-")){
+                    output.set(i, new UnaryOp(((Token)output.get(i)).getValue(), (ExpressionSyntax)output.get(i+1)));
+                    output.remove(i+1);
+                }else{i++;}
+            }else{i++;}
+        }
+        return output;
+    }
     public static Syntax parseText(ArrayList<Syntax> structure){
         ArrayList<Syntax> output = structure;
         output = Parser.parseParentheses(output);
         output = Parser.parseLiteral(output);
+        output = Parser.parseUnary(output);
         output = Parser.parseFactor(output);
         output = Parser.parseTerm(output);
         if (output.size() != 1){
