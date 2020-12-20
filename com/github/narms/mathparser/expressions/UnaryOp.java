@@ -45,12 +45,14 @@ public class UnaryOp extends ExpressionSyntax {
 
     @Override
     public ExpressionSyntax reduce() {
-        return this;
+        if (this.operator.equals("-")){
+            return (new BinOp("*", this.contents, new Const(-1))).reduce();
+        }
+        return this.contents.reduce();
     }
 
     @Override
     public SyntaxType getType() {
         return SyntaxType.UNARYOPEXPR;
     }
-    
 }

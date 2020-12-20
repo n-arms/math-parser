@@ -47,5 +47,4 @@ public class Const extends ExpressionSyntax {
     public ExpressionSyntax reduce(){
         return this;
     }
-    
 }
