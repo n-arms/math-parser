@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.github.narms.mathparser.expressions.BinOp;
 import com.github.narms.mathparser.expressions.Const;
 import com.github.narms.mathparser.expressions.Paren;
+import com.github.narms.mathparser.expressions.Var;
 import com.github.narms.mathparser.exceptions.ParserException;
 
 public class Parser {
@@ -31,6 +32,9 @@ public class Parser {
             if (s instanceof Token){
                 if (((Token)s).getType().equals(SyntaxType.NUMTOKEN)){
                     output.set(structure.indexOf(s), new Const((Token)output.get(structure.indexOf(s))));
+                }
+                else if (((Token)s).getType().equals(SyntaxType.SYMTOKEN)){
+                    output.set(structure.indexOf(s), new Var(((Token)output.get(structure.indexOf(s))).getValue()));
                 }
             }
         }
@@ -80,7 +84,6 @@ public class Parser {
         output = Parser.parseLiteral(output);
         output = Parser.parseFactor(output);
         output = Parser.parseTerm(output);
-
         if (output.size() != 1){
             System.out.println(output);
             throw new ParserException("Parser couldn't reduce a 1 root tree");
