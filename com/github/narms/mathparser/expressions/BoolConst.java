@@ -3,20 +3,12 @@ package com.github.narms.mathparser.expressions;
 import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
-import com.github.narms.mathparser.Token;
 
-public class Const extends LiteralSyntax {
-    private double value;
-    public Const(Token t){
-        this.value = Double.parseDouble(t.getValue());
-    }
-    public Const(double d){
-        this.value = d;
-    }
+public class BoolConst extends LiteralSyntax {
+    private boolean value;
 
-    @Override
-    public ExpressionSyntax derivative(String name){
-        return new Const(0);
+    public BoolConst(boolean b){
+        this.value = b;
     }
 
     @Override
@@ -35,22 +27,28 @@ public class Const extends LiteralSyntax {
     }
 
     @Override
-    public SyntaxType getType() {
-        return SyntaxType.CONSTEXPR;
+    public ExpressionSyntax derivative(String variable) {
+        return new Const(0);
     }
 
     @Override
-    public ExpressionSyntax reduce(){
+    public ExpressionSyntax reduce() {
         return this;
     }
 
     @Override
-    public EvalType evaluatable(){
-        return EvalType.DOUBLE;
+    public EvalType evaluatable() {
+        return EvalType.BOOL;
     }
 
     @Override
-    public Object getValue(){
+    public SyntaxType getType() {
+        return SyntaxType.BOOLEXPR;
+    }
+
+    @Override
+    public Object getValue() {
         return this.value;
     }
+    
 }

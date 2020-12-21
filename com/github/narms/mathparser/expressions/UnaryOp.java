@@ -1,5 +1,6 @@
 package com.github.narms.mathparser.expressions;
 
+import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
 
@@ -13,20 +14,12 @@ public class UnaryOp extends ExpressionSyntax {
     }
 
     @Override
-    public double eval() {
-        if (this.operator.equals("-")){
-            return this.contents.eval()*-1;
-        }
-        return this.contents.eval();
-    }
-
-    @Override
     public boolean hasVar(String name) {
         return false;
     }
 
     @Override
-    public boolean defVar(String name, double value) {
+    public boolean defVar(String name, Object value) {
         return false;
     }
 
@@ -54,5 +47,10 @@ public class UnaryOp extends ExpressionSyntax {
     @Override
     public SyntaxType getType() {
         return SyntaxType.UNARYOPEXPR;
+    }
+
+    @Override
+    public EvalType evaluatable(){
+        return this.contents.evaluatable();
     }
 }

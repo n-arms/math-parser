@@ -1,26 +1,18 @@
 package com.github.narms.mathparser.expressions;
 
+import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
 import com.github.narms.mathparser.exceptions.UndefinedVariableException;
 
-public class Var extends ExpressionSyntax {
+public class Var extends LiteralSyntax {
     private String name;
-    private double value;
+    private Object value;
     private boolean defined;
 
     public Var(String name){
         this.name = name;
         this.defined = false;
-    }
-
-    @Override
-    public double eval() {
-        if (this.defined){
-            return this.value;
-        }else{
-            throw new UndefinedVariableException("Undefined Variable "+this.name+" was called");
-        }
     }
 
     @Override
@@ -37,7 +29,7 @@ public class Var extends ExpressionSyntax {
     }
 
     @Override
-    public boolean defVar(String name, double value) {
+    public boolean defVar(String name, Object value) {
         if (this.name.equals(name)){
             this.value = value;
             this.defined = true;
@@ -60,5 +52,24 @@ public class Var extends ExpressionSyntax {
     @Override
     public ExpressionSyntax reduce(){
         return this;
+    }
+
+    @Override
+    public EvalType evaluatable(){
+        if (this.defined){
+            if (this.value instanceof Boolean){
+                return EvalType.BOOL;
+            }else if (this.value instanceof Double){
+                return EvalType.DOUBLE;
+            }
+        }
+        return EvalType.TREE;
+    }
+
+    public Object getValue(){
+        if (this.defined){
+            return this.value;
+        }
+        throw new UndefinedVariableException("Undefined Variable "+this.name);
     }
 }

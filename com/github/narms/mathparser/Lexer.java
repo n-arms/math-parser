@@ -5,6 +5,8 @@ import java.util.ArrayList;
 public class Lexer {
     private ArrayList<Syntax> tokens;
     private char[] input;
+
+
     public Lexer(String input){
         this.input = input.toCharArray();
         this.tokens = new ArrayList<Syntax>();

@@ -3,6 +3,7 @@ package com.github.narms.mathparser;
 import java.util.ArrayList;
 
 import com.github.narms.mathparser.expressions.BinOp;
+import com.github.narms.mathparser.expressions.BoolConst;
 import com.github.narms.mathparser.expressions.Const;
 import com.github.narms.mathparser.expressions.Paren;
 import com.github.narms.mathparser.expressions.UnaryOp;
@@ -33,10 +34,12 @@ public class Parser {
             if (s instanceof Token){
                 if (((Token)s).getType().equals(SyntaxType.NUMTOKEN)){
                     output.set(structure.indexOf(s), new Const((Token)output.get(structure.indexOf(s))));
-                }
-                else if (((Token)s).getType().equals(SyntaxType.SYMTOKEN)){
+                }else if (((Token)s).getType().equals(SyntaxType.SYMTOKEN)){
                     output.set(structure.indexOf(s), new Var(((Token)output.get(structure.indexOf(s))).getValue()));
-                }
+                } 
+                else if (((Token)s).getType().equals(SyntaxType.KEYVARTOKEN)){
+                    output.set(structure.indexOf(s), new BoolConst(Boolean.parseBoolean(((Token)output.get(structure.indexOf(s))).getValue())));
+                } 
             }
         }
         return output;
@@ -57,6 +60,22 @@ public class Parser {
         }
         return output;
 
+    }
+    public static ArrayList<Syntax> parseComparison(ArrayList<Syntax> structure){
+        ArrayList<Syntax> output = structure;
+        int i = 0;
+        while (i<output.size()){
+            if (output.get(i) instanceof Token){
+                if (((Token)output.get(i)).getValue().equals("|") || ((Token)output.get(i)).getValue().equals("&")){
+                    output.set(i, new BinOp(((Token)output.get(i)).getValue(), 
+                    (ExpressionSyntax)output.get(i-1), 
+                    (ExpressionSyntax)output.get(i+1)));
+                    output.remove(i+1);
+                    output.remove(i-1);
+                }else{i++;}
+            }else{i++;}
+        }
+        return output;
     }
     public static ArrayList<Syntax> parseParentheses(ArrayList<Syntax> structure){
         ArrayList<Syntax> output = new ArrayList<Syntax>();
@@ -106,6 +125,7 @@ public class Parser {
         output = Parser.parseUnary(output);
         output = Parser.parseFactor(output);
         output = Parser.parseTerm(output);
+        output = Parser.parseComparison(output);
         if (output.size() != 1){
             System.out.println(output);
             throw new ParserException("Parser couldn't reduce a 1 root tree");
