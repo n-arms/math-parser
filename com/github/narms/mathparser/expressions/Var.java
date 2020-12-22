@@ -59,7 +59,7 @@ public class Var extends LiteralSyntax {
         if (this.defined){
             if (this.value instanceof Boolean){
                 return EvalType.BOOL;
-            }else if (this.value instanceof Double){
+            }else{
                 return EvalType.DOUBLE;
             }
         }
@@ -68,6 +68,9 @@ public class Var extends LiteralSyntax {
 
     public Object getValue(){
         if (this.defined){
+            if (this.value instanceof Number){
+                return ((Number)this.value).doubleValue();
+            }
             return this.value;
         }
         throw new UndefinedVariableException("Undefined Variable "+this.name);

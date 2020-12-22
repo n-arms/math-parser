@@ -35,7 +35,9 @@ public class BinOp extends ExpressionSyntax {
 
     @Override
     public boolean defVar(String name, Object value) {
-        return this.value1.defVar(name, value) || this.value2.defVar(name, value);
+        boolean left = this.value1.defVar(name, value);
+        boolean right = this.value2.defVar(name, value);
+        return  left || right;
     }
 
     @Override
@@ -196,6 +198,7 @@ public class BinOp extends ExpressionSyntax {
         if (this.value1.evaluatable().equals(this.value2.evaluatable()) && !this.value1.evaluatable().equals(EvalType.TREE)){
             return this.value1.evaluatable();
         }
+
         return EvalType.TREE;
     }
 }
