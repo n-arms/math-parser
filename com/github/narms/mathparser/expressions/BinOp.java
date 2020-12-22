@@ -165,6 +165,8 @@ public class BinOp extends ExpressionSyntax {
                 return new BoolConst((Double)((LiteralSyntax)this.value1.reduce()).getValue() > (Double)((LiteralSyntax)this.value2.reduce()).getValue());
                 case "<":
                 return new BoolConst((Double)((LiteralSyntax)this.value1.reduce()).getValue() < (Double)((LiteralSyntax)this.value2.reduce()).getValue());
+                case "^":
+                return new Const(Math.pow((Double)((LiteralSyntax)this.value1.reduce()).getValue(), (Double)((LiteralSyntax)this.value2.reduce()).getValue()));
                 default:
                 throw new IllegalSyntaxException("Illegal Operand on Double BinOp");
             }

@@ -59,8 +59,23 @@ public class Parser {
             }else{i++;}
         }
         return output;
-
     }
+    public static ArrayList<Syntax> parsePower(ArrayList<Syntax> structure){
+        ArrayList<Syntax> output = structure;
+        int i = 0;
+        while (i<output.size()){
+            if (output.get(i) instanceof Token){
+                if (((Token)output.get(i)).getValue().equals("^")){
+                    output.set(i, new BinOp("^", (ExpressionSyntax)output.get(i-1), (ExpressionSyntax)output.get(i+1)));
+                    output.remove(i+1);
+                    output.remove(i-1);
+                }else{i++;}
+            }else{i++;}
+        }
+        return output;
+    }
+
+
     public static ArrayList<Syntax> parseComparison(ArrayList<Syntax> structure){
         ArrayList<Syntax> output = structure;
         int i = 0;
@@ -135,6 +150,7 @@ public class Parser {
         ArrayList<Syntax> output = structure;
         output = Parser.parseParentheses(output);
         output = Parser.parseLiteral(output);
+        output = Parser.parsePower(output);
         output = Parser.parseUnary(output);
         output = Parser.parseImpilicitMult(output);
         output = Parser.parseFactor(output);
