@@ -98,6 +98,19 @@ public class Parser {
         }
         return output;
     }
+    public static ArrayList<Syntax> parseImpilicitMult(ArrayList<Syntax> structure){
+        int i = 1;
+        ArrayList<Syntax> output = structure;
+        while (i<output.size()){
+            if (!(output.get(i) instanceof Token) && !(output.get(i-1) instanceof Token)){
+                output.set(i, new BinOp("*", (ExpressionSyntax)output.get(i), (ExpressionSyntax)output.get(i-1)));
+                output.remove(i-1);
+            }else{i++;}
+        }
+        return output;
+    }
+
+
     public static ArrayList<Syntax> parseUnary(ArrayList<Syntax> structure){
         int i = 1;
         ArrayList<Syntax> output = structure;
@@ -123,6 +136,7 @@ public class Parser {
         output = Parser.parseParentheses(output);
         output = Parser.parseLiteral(output);
         output = Parser.parseUnary(output);
+        output = Parser.parseImpilicitMult(output);
         output = Parser.parseFactor(output);
         output = Parser.parseTerm(output);
         output = Parser.parseComparison(output);
