@@ -148,6 +148,34 @@ public class BinOp extends ExpressionSyntax {
         return this;
     }*/
 
+    public ExpressionSyntax distribute(){
+        if (this.value1.evaluatable().equals(EvalType.DOUBLE) && this.value2 instanceof BinOp && ((BinOp)this.value2).getOperator().equals("+")){
+            return new BinOp("+", new BinOp("*", this.value1.reduce(), ((BinOp)this.value2.reduce()).getValue1()), 
+            new BinOp("*", this.value1.reduce(), ((BinOp)this.value2.reduce()).getValue2()));
+        } else if (this.value2.evaluatable().equals(EvalType.DOUBLE) && this.value1 instanceof BinOp && ((BinOp)this.value1).getOperator().equals("+")){
+            return new BinOp("+", new BinOp("*", this.value2.reduce(), ((BinOp)this.value1.reduce()).getValue1()), 
+            new BinOp("*", this.value2.reduce(), ((BinOp)this.value1.reduce()).getValue2()));
+        } else if (this.value1.evaluatable().equals(EvalType.DOUBLE) && this.value2 instanceof BinOp && ((BinOp)this.value2).getOperator().equals("-")){
+            return new BinOp("-", new BinOp("*", this.value1.reduce(), ((BinOp)this.value2.reduce()).getValue1()), 
+            new BinOp("*", this.value1.reduce(), new UnaryOp("-", ((BinOp)this.value2.reduce()).getValue2())));
+        } else if (this.value2.evaluatable().equals(EvalType.DOUBLE) && this.value1 instanceof BinOp && ((BinOp)this.value1).getOperator().equals("-")){
+            return new BinOp("-", new BinOp("*", this.value2.reduce(), ((BinOp)this.value1.reduce()).getValue1()), 
+            new BinOp("*", this.value2.reduce(), new UnaryOp("-", ((BinOp)this.value1.reduce()).getValue2())));
+        } else if (this.value1.reduce() instanceof BinOp && this.value2.reduce() instanceof BinOp){
+            switch (((BinOp)this.value1.reduce()).getOperator()+((BinOp)this.value1.reduce()).getOperator()){
+                case "++":
+                return new BinOp("+", new BinOp("*", ((BinOp)this.value1.reduce()).getValue1(), ((BinOp)this.value2.reduce()).getValue1()), new BinOp("*", ((BinOp)this.value1.reduce()).getValue2(), ((BinOp)this.value2.reduce()).getValue2()));
+                case "+-":
+                break;
+                case "-+":
+                break;
+                case "--":
+                break;
+            }
+        }
+        throw new IllegalSyntaxException("testing");
+    }
+
     @Override
     public ExpressionSyntax reduce(){
         switch (this.evaluatable()){
@@ -161,10 +189,6 @@ public class BinOp extends ExpressionSyntax {
                 return new Const((Double)((LiteralSyntax)this.value1.reduce()).getValue() + (Double)((LiteralSyntax)this.value2.reduce()).getValue());
                 case "-":
                 return new Const((Double)((LiteralSyntax)this.value1.reduce()).getValue() - (Double)((LiteralSyntax)this.value2.reduce()).getValue());
-                case ">":
-                return new BoolConst((Double)((LiteralSyntax)this.value1.reduce()).getValue() > (Double)((LiteralSyntax)this.value2.reduce()).getValue());
-                case "<":
-                return new BoolConst((Double)((LiteralSyntax)this.value1.reduce()).getValue() < (Double)((LiteralSyntax)this.value2.reduce()).getValue());
                 case "^":
                 return new Const(Math.pow((Double)((LiteralSyntax)this.value1.reduce()).getValue(), (Double)((LiteralSyntax)this.value2.reduce()).getValue()));
                 default:
@@ -174,6 +198,10 @@ public class BinOp extends ExpressionSyntax {
             switch (this.operator){
                 case "&":
                 return new BoolConst((Boolean)((LiteralSyntax)this.value1.reduce()).getValue() && (Boolean)((LiteralSyntax)this.value2.reduce()).getValue());
+                case ">":
+                return new BoolConst((Double)((LiteralSyntax)this.value1.reduce()).getValue() > (Double)((LiteralSyntax)this.value2.reduce()).getValue());
+                case "<":
+                return new BoolConst((Double)((LiteralSyntax)this.value1.reduce()).getValue() < (Double)((LiteralSyntax)this.value2.reduce()).getValue());
                 case "|":
                 return new BoolConst((Boolean)((LiteralSyntax)this.value1.reduce()).getValue() || (Boolean)((LiteralSyntax)this.value2.reduce()).getValue());
                 default:
@@ -182,7 +210,7 @@ public class BinOp extends ExpressionSyntax {
             case TREE:
             return new BinOp(this.operator, this.value1.reduce(), this.value2.reduce());
             default:
-            throw new IllegalSyntaxException("Illegal EvalType on this");
+            throw new IllegalSyntaxException("Illegal EvalType on "+this.toString());
         }
     }
 
@@ -197,7 +225,9 @@ public class BinOp extends ExpressionSyntax {
     }
     @Override
     public EvalType evaluatable(){
-        if (this.value1.evaluatable().equals(this.value2.evaluatable()) && !this.value1.evaluatable().equals(EvalType.TREE)){
+        if (this.operator.equals(">") || this.operator.equals("<")){
+            return EvalType.BOOL;
+        }else if (this.value1.evaluatable().equals(this.value2.evaluatable()) && !this.value1.evaluatable().equals(EvalType.TREE)){
             return this.value1.evaluatable();
         }
 

@@ -15,15 +15,17 @@ public class Lexer {
 
     public ArrayList<Syntax> lex(){
         for (char c: this.input){
-            if (((Token)this.tokens.get(this.tokens.size()-1)).matchType(c)){
-                ((Token)this.tokens.get(this.tokens.size()-1)).addChar(c);
-                ((Token)this.tokens.get(this.tokens.size()-1)).setType();
+            if (c!=' '){
+                if (((Token)this.tokens.get(this.tokens.size()-1)).matchType(c)){
+                    ((Token)this.tokens.get(this.tokens.size()-1)).addChar(c);
+                    ((Token)this.tokens.get(this.tokens.size()-1)).setType();
+                }
+                else{
+                    this.tokens.add(new Token());
+                    ((Token)this.tokens.get(this.tokens.size()-1)).addChar(c);
+                    ((Token)this.tokens.get(this.tokens.size()-1)).setType();
             }
-            else{
-                this.tokens.add(new Token());
-                ((Token)this.tokens.get(this.tokens.size()-1)).addChar(c);
-                ((Token)this.tokens.get(this.tokens.size()-1)).setType();
-            }
+        }
         }
         return this.tokens;
     }

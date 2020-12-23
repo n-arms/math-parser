@@ -12,10 +12,10 @@ import com.github.narms.mathparser.exceptions.ParserException;
 
 public class Parser {
     public static ArrayList<Syntax> parseTerm(ArrayList<Syntax> structure){
-        int i = 0;
+        int i = 1;
         ArrayList<Syntax> output = structure;
-        while (i<output.size()){
-            if (output.get(i) instanceof Token){
+        while (i<output.size()-1){
+            if (output.get(i) instanceof Token && output.get(i-1) instanceof ExpressionSyntax && output.get(i+1) instanceof ExpressionSyntax){
                 if (((Token) output.get(i)).getValue().equals("+") || ((Token) output.get(i)).getValue().equals("-")){
                     output.set(i, new BinOp(((Token)output.get(i)).getValue(), 
                     ((ExpressionSyntax)output.get(i-1)), 
@@ -37,7 +37,7 @@ public class Parser {
                 }else if (((Token)s).getType().equals(SyntaxType.SYMTOKEN)){
                     output.set(structure.indexOf(s), new Var(((Token)output.get(structure.indexOf(s))).getValue()));
                 } 
-                else if (((Token)s).getType().equals(SyntaxType.KEYVARTOKEN)){
+                else if (((Token)s).getType().equals(SyntaxType.KEYVARTOKEN) && (((Token)s).getValue().equals("true") || ((Token)s).getValue().equals("false"))){
                     output.set(structure.indexOf(s), new BoolConst(Boolean.parseBoolean(((Token)output.get(structure.indexOf(s))).getValue())));
                 } 
             }
@@ -46,9 +46,9 @@ public class Parser {
     }
     public static ArrayList<Syntax> parseFactor(ArrayList<Syntax> structure){
         ArrayList<Syntax> output = structure;
-        int i = 0;
-        while (i<output.size()){
-            if (output.get(i) instanceof Token){
+        int i = 1;
+        while (i<output.size()-1){
+            if (output.get(i) instanceof Token && output.get(i-1) instanceof ExpressionSyntax && output.get(i+1) instanceof ExpressionSyntax){
                 if (((Token)output.get(i)).getValue().equals("*") || ((Token)output.get(i)).getValue().equals("/")){
                     output.set(i, new BinOp(((Token)output.get(i)).getValue(), 
                     (ExpressionSyntax)output.get(i-1), 
@@ -56,15 +56,23 @@ public class Parser {
                     output.remove(i+1);
                     output.remove(i-1);
                 }else{i++;}
+            } else if (!(output.get(i) instanceof Token) && !(output.get(i-1) instanceof Token)){
+                output.set(i, new BinOp("*", (ExpressionSyntax) output.get(i), (ExpressionSyntax)output.get(i-1)));
+                output.remove(i-1);
             }else{i++;}
+        }
+        i = output.size()-1;
+        if (!(output.get(i) instanceof Token) && !(output.get(i-1) instanceof Token)){
+            output.set(i, new BinOp("*", (ExpressionSyntax) output.get(i), (ExpressionSyntax) output.get(i-1)));
+            output.remove(i-1);
         }
         return output;
     }
     public static ArrayList<Syntax> parsePower(ArrayList<Syntax> structure){
         ArrayList<Syntax> output = structure;
-        int i = 0;
-        while (i<output.size()){
-            if (output.get(i) instanceof Token){
+        int i = 1;
+        while (i<output.size()-1){
+            if (output.get(i) instanceof Token && output.get(i+1) instanceof ExpressionSyntax && output.get(i-1) instanceof ExpressionSyntax){
                 if (((Token)output.get(i)).getValue().equals("^")){
                     output.set(i, new BinOp("^", (ExpressionSyntax)output.get(i-1), (ExpressionSyntax)output.get(i+1)));
                     output.remove(i+1);
@@ -78,10 +86,11 @@ public class Parser {
 
     public static ArrayList<Syntax> parseComparison(ArrayList<Syntax> structure){
         ArrayList<Syntax> output = structure;
-        int i = 0;
-        while (i<output.size()){
-            if (output.get(i) instanceof Token){
-                if (((Token)output.get(i)).getValue().equals("|") || ((Token)output.get(i)).getValue().equals("&")){
+        int i = 1;
+        while (i<output.size()-1){
+            if (output.get(i) instanceof Token && output.get(i-1) instanceof ExpressionSyntax && output.get(i+1) instanceof ExpressionSyntax){
+                if (((Token)output.get(i)).getValue().equals("|") || ((Token)output.get(i)).getValue().equals("&") || 
+                ((Token)output.get(i)).getValue().equals(">") || ((Token)output.get(i)).getValue().equals("<")){
                     output.set(i, new BinOp(((Token)output.get(i)).getValue(), 
                     (ExpressionSyntax)output.get(i-1), 
                     (ExpressionSyntax)output.get(i+1)));
@@ -113,46 +122,33 @@ public class Parser {
         }
         return output;
     }
-    public static ArrayList<Syntax> parseImpilicitMult(ArrayList<Syntax> structure){
-        int i = 1;
-        ArrayList<Syntax> output = structure;
-        while (i<output.size()){
-            if (!(output.get(i) instanceof Token) && !(output.get(i-1) instanceof Token)){
-                output.set(i, new BinOp("*", (ExpressionSyntax)output.get(i), (ExpressionSyntax)output.get(i-1)));
-                output.remove(i-1);
-            }else{i++;}
-        }
-        return output;
-    }
-
 
     public static ArrayList<Syntax> parseUnary(ArrayList<Syntax> structure){
-        int i = 1;
+        int i = structure.size()-1;
         ArrayList<Syntax> output = structure;
-        if (output.get(0) instanceof Token){
-            if (((Token)output.get(0)).getValue().equals("+") || ((Token)output.get(0)).getValue().equals("-")){
-                output.set(0, new UnaryOp(((Token)output.get(0)).getValue(), (ExpressionSyntax)output.get(1)));
-                output.remove(1);
-            }
-        }
+        while (i>0){
+            if (i==1 && output.get(0) instanceof Token && output.get(1) instanceof ExpressionSyntax){
+                if (((Token)output.get(0)).getValue().equals("+") || ((Token)output.get(0)).getValue().equals("-")){
+                    output.set(0, new UnaryOp(((Token)output.get(0)).getValue(), (ExpressionSyntax)output.get(1)));
+                    output.remove(1);
+                    return output;
+                } else {i=i-1;}
+            } else if (output.get(i) instanceof ExpressionSyntax && output.get(i-1) instanceof Token && output.get(i-2) instanceof Token){
+                output.set(i, new UnaryOp(((Token)output.get(i-1)).getValue(), (ExpressionSyntax)output.get(i)));
+                output.remove(i-1);
+                i = i-2;
+            } else{i = i-1;}
 
-        while (i<output.size()){
-            if (output.get(i-1) instanceof Token && output.get(i) instanceof Token){
-                if (((Token)output.get(i)).getValue().equals("+") || ((Token)output.get(i)).getValue().equals("-")){
-                    output.set(i, new UnaryOp(((Token)output.get(i)).getValue(), (ExpressionSyntax)output.get(i+1)));
-                    output.remove(i+1);
-                }else{i++;}
-            }else{i++;}
         }
         return output;
     }
+
     public static Syntax parseText(ArrayList<Syntax> structure){
         ArrayList<Syntax> output = structure;
         output = Parser.parseParentheses(output);
         output = Parser.parseLiteral(output);
         output = Parser.parsePower(output);
         output = Parser.parseUnary(output);
-        output = Parser.parseImpilicitMult(output);
         output = Parser.parseFactor(output);
         output = Parser.parseTerm(output);
         output = Parser.parseComparison(output);
