@@ -1,7 +1,7 @@
 package com.github.narms.mathparser;
 
 public abstract class ExpressionSyntax extends Syntax{
-    //public abstract double eval();
+    public abstract Object approximate();
     public abstract boolean hasVar(String name);
     public abstract boolean defVar(String name, Object value);
     public abstract String toString();

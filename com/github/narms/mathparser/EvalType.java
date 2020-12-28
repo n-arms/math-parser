@@ -1,5 +1,5 @@
 package com.github.narms.mathparser;
 
 public enum EvalType{
-    DOUBLE, TREE, BOOL;
+    BOOL, NUM, HARDTREE, SOFTTREE; //a hard tree is one that cannot be approximated, a soft one can be
 }

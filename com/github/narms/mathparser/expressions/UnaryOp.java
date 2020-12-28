@@ -53,4 +53,9 @@ public class UnaryOp extends ExpressionSyntax {
     public EvalType evaluatable(){
         return this.contents.evaluatable();
     }
+
+    @Override
+    public Object approximate(){
+        return this.reduce();
+    }
 }

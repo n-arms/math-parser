@@ -61,10 +61,12 @@ public class Parser {
                 output.remove(i-1);
             }else{i++;}
         }
-        i = output.size()-1;
-        if (!(output.get(i) instanceof Token) && !(output.get(i-1) instanceof Token)){
-            output.set(i, new BinOp("*", (ExpressionSyntax) output.get(i), (ExpressionSyntax) output.get(i-1)));
-            output.remove(i-1);
+        if (output.size()>1){
+            i = output.size()-1;
+            if (!(output.get(i) instanceof Token) && !(output.get(i-1) instanceof Token)){
+                output.set(i, new BinOp("*", (ExpressionSyntax) output.get(i), (ExpressionSyntax) output.get(i-1)));
+                output.remove(i-1);
+            }
         }
         return output;
     }

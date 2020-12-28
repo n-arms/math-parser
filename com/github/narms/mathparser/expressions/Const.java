@@ -46,11 +46,16 @@ public class Const extends LiteralSyntax {
 
     @Override
     public EvalType evaluatable(){
-        return EvalType.DOUBLE;
+        return EvalType.NUM;
     }
 
     @Override
     public Object getValue(){
+        return this.value;
+    }
+
+    @Override
+    public Object approximate(){
         return this.value;
     }
 }

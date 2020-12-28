@@ -57,13 +57,9 @@ public class Var extends LiteralSyntax {
     @Override
     public EvalType evaluatable(){
         if (this.defined){
-            if (this.value instanceof Boolean){
-                return EvalType.BOOL;
-            }else{
-                return EvalType.DOUBLE;
-            }
+            return EvalType.SOFTTREE;
         }
-        return EvalType.TREE;
+        return EvalType.HARDTREE;
     }
 
     public Object getValue(){
@@ -74,5 +70,9 @@ public class Var extends LiteralSyntax {
             return this.value;
         }
         throw new UndefinedVariableException("Undefined Variable "+this.name);
+    }
+
+    public Object approximate(){
+        return this.getValue();
     }
 }

@@ -50,5 +50,10 @@ public class BoolConst extends LiteralSyntax {
     public Object getValue() {
         return this.value;
     }
+
+    @Override
+    public Object approximate(){
+        return this.value;
+    }
     
 }

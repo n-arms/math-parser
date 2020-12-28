@@ -49,168 +49,18 @@ public class BinOp extends ExpressionSyntax {
     public SyntaxType getType() {
         return SyntaxType.BINOPEXPR;
     }
-/*
-    @Override
-    public ExpressionSyntax reduce(){
-        ExpressionSyntax safeValue1 = this.value1.reduce();
-        ExpressionSyntax safeValue2 = this.value2.reduce();
-        boolean isZero1 = false;
-        boolean isZero2 = false;
-        boolean isOne2 = false;
-        if (safeValue1 instanceof Const){
-            isZero1 = safeValue1.eval()==0;
-        }
-        if (safeValue2 instanceof Const){
-            isZero2 = safeValue2.eval()==0;
-            isOne2 = safeValue2.eval()==1;
-        }
-        switch (this.operator){
-            case "+":
-            return this.commute();
-            case "-":
-            return this.commute();
-            case "*":
-            return this.distribute();
-            case "/":
-            if (isZero1){
-                return new Const(0);
-            }
-            if (isZero2){
-                throw new ArithmeticException();
-            }
-            if (isOne2){
-                return safeValue1;
-            }
-            break;
-            default:
-            break;
-        }
-        return new BinOp(this.operator, safeValue1, safeValue2);
-    }
-    private ExpressionSyntax distribute(){
-
-        if (this.value1.evaluatable() && this.value2.evaluatable()){
-            if (this.value1.reduce().eval()==0){
-                return new Const(0);
-            }
-        }
-        if (this.value2.reduce() instanceof Const){
-            if (this.value2.reduce().eval()==0){
-                return new Const(0);
-            }
-        }
-        if (this.value1.reduce() instanceof Const){
-            if (this.value1.reduce().eval()==1){
-                return this.value2.reduce();
-            }
-        }
-        if (this.value2.reduce() instanceof Const){
-            if (this.value2.reduce().eval()==1){
-                return this.value1.reduce();
-            }
-        }
-        if (this.value1.reduce() instanceof BinOp && value2.reduce() instanceof BinOp){
-            if (((BinOp)this.value1.reduce()).getOperator().equals("+") && ((BinOp)this.value2.reduce()).getOperator().equals("+")){
-                return new BinOp("+", new BinOp("+", new BinOp("*", ((BinOp)this.value1.reduce()).getValue1(), ((BinOp)this.value2.reduce()).getValue1()), 
-                new BinOp("*", ((BinOp)this.value1.reduce()).getValue2(), ((BinOp)this.value2.reduce()).getValue2())), new BinOp("+", 
-                new BinOp("*", ((BinOp)this.value1.reduce()).getValue2(), ((BinOp)this.value2.reduce()).getValue1()), 
-                new BinOp("*", ((BinOp)this.value1.reduce()).getValue1(), ((BinOp)this.value2.reduce()).getValue2())));
-            }
-        }
-        if (this.value1.reduce() instanceof BinOp){
-            return new BinOp("+", new BinOp("*", this.value2.reduce(), ((BinOp)this.value1.reduce()).getValue1()), new BinOp("*", this.value2.reduce(), ((BinOp)this.value1.reduce()).getValue2()));
-        }
-        if (this.value2.reduce() instanceof BinOp){
-            return new BinOp("+", new BinOp("*", this.value1.reduce(), ((BinOp)this.value2.reduce()).getValue1()), new BinOp("*", this.value1.reduce(), ((BinOp)this.value2.reduce()).getValue2()));
-        }
-        
-        return new BinOp("*", this.value1.reduce(), this.value2.reduce());
-    }
-    private ExpressionSyntax commute(){
-        System.out.println("commuting");
-        if (this.value1.reduce() instanceof Const){
-            if (this.value1.reduce().eval()==0){
-                System.out.println("found zero");
-                if (this.operator.equals("+")){
-                    System.out.println("adding zeroes");
-                    return this.value2.reduce();
-                }else if (this.operator.equals("-")){
-                    return new BinOp("*", new Const(-1), this.value2.reduce());
-                }
-                
-            }
-        }
-        if (this.value2.reduce() instanceof Const){
-            if (this.value2.reduce().eval()==0){
-                return this.value1.reduce();
-            }
-        }
-        return this;
-    }*/
-
-    public ExpressionSyntax distribute(){
-        if (this.value1.evaluatable().equals(EvalType.DOUBLE) && this.value2 instanceof BinOp && ((BinOp)this.value2).getOperator().equals("+")){
-            return new BinOp("+", new BinOp("*", this.value1.reduce(), ((BinOp)this.value2.reduce()).getValue1()), 
-            new BinOp("*", this.value1.reduce(), ((BinOp)this.value2.reduce()).getValue2()));
-        } else if (this.value2.evaluatable().equals(EvalType.DOUBLE) && this.value1 instanceof BinOp && ((BinOp)this.value1).getOperator().equals("+")){
-            return new BinOp("+", new BinOp("*", this.value2.reduce(), ((BinOp)this.value1.reduce()).getValue1()), 
-            new BinOp("*", this.value2.reduce(), ((BinOp)this.value1.reduce()).getValue2()));
-        } else if (this.value1.evaluatable().equals(EvalType.DOUBLE) && this.value2 instanceof BinOp && ((BinOp)this.value2).getOperator().equals("-")){
-            return new BinOp("-", new BinOp("*", this.value1.reduce(), ((BinOp)this.value2.reduce()).getValue1()), 
-            new BinOp("*", this.value1.reduce(), new UnaryOp("-", ((BinOp)this.value2.reduce()).getValue2())));
-        } else if (this.value2.evaluatable().equals(EvalType.DOUBLE) && this.value1 instanceof BinOp && ((BinOp)this.value1).getOperator().equals("-")){
-            return new BinOp("-", new BinOp("*", this.value2.reduce(), ((BinOp)this.value1.reduce()).getValue1()), 
-            new BinOp("*", this.value2.reduce(), new UnaryOp("-", ((BinOp)this.value1.reduce()).getValue2())));
-        } else if (this.value1.reduce() instanceof BinOp && this.value2.reduce() instanceof BinOp){
-            switch (((BinOp)this.value1.reduce()).getOperator()+((BinOp)this.value1.reduce()).getOperator()){
-                case "++":
-                return new BinOp("+", new BinOp("*", ((BinOp)this.value1.reduce()).getValue1(), ((BinOp)this.value2.reduce()).getValue1()), new BinOp("*", ((BinOp)this.value1.reduce()).getValue2(), ((BinOp)this.value2.reduce()).getValue2()));
-                case "+-":
-                break;
-                case "-+":
-                break;
-                case "--":
-                break;
-            }
-        }
-        throw new IllegalSyntaxException("testing");
-    }
 
     @Override
     public ExpressionSyntax reduce(){
+        this.value1 = this.value1.reduce();
+        this.value2 = this.value2.reduce();
         switch (this.evaluatable()){
-            case DOUBLE:
-            switch (this.operator){
-                case "*":
-                return new Const((Double)((LiteralSyntax)this.value1.reduce()).getValue() * (Double)((LiteralSyntax)this.value2.reduce()).getValue());
-                case "/":
-                return new Const((Double)((LiteralSyntax)this.value1.reduce()).getValue() / (Double)((LiteralSyntax)this.value2.reduce()).getValue());
-                case "+":
-                return new Const((Double)((LiteralSyntax)this.value1.reduce()).getValue() + (Double)((LiteralSyntax)this.value2.reduce()).getValue());
-                case "-":
-                return new Const((Double)((LiteralSyntax)this.value1.reduce()).getValue() - (Double)((LiteralSyntax)this.value2.reduce()).getValue());
-                case "^":
-                return new Const(Math.pow((Double)((LiteralSyntax)this.value1.reduce()).getValue(), (Double)((LiteralSyntax)this.value2.reduce()).getValue()));
-                default:
-                throw new IllegalSyntaxException("Illegal Operand on Double BinOp");
-            }
             case BOOL:
-            switch (this.operator){
-                case "&":
-                return new BoolConst((Boolean)((LiteralSyntax)this.value1.reduce()).getValue() && (Boolean)((LiteralSyntax)this.value2.reduce()).getValue());
-                case ">":
-                return new BoolConst((Double)((LiteralSyntax)this.value1.reduce()).getValue() > (Double)((LiteralSyntax)this.value2.reduce()).getValue());
-                case "<":
-                return new BoolConst((Double)((LiteralSyntax)this.value1.reduce()).getValue() < (Double)((LiteralSyntax)this.value2.reduce()).getValue());
-                case "|":
-                return new BoolConst((Boolean)((LiteralSyntax)this.value1.reduce()).getValue() || (Boolean)((LiteralSyntax)this.value2.reduce()).getValue());
-                default:
-                throw new IllegalSyntaxException("Illegal Operand on Boolean BinOp");
-            }
-            case TREE:
-            return new BinOp(this.operator, this.value1.reduce(), this.value2.reduce());
+            return new BoolConst((Boolean)this.approximate());
+            case NUM:
+            return new Const((Double)this.approximate());
             default:
-            throw new IllegalSyntaxException("Illegal EvalType on "+this.toString());
+            return this;
         }
     }
 
@@ -225,12 +75,53 @@ public class BinOp extends ExpressionSyntax {
     }
     @Override
     public EvalType evaluatable(){
-        if (this.operator.equals(">") || this.operator.equals("<")){
-            return EvalType.BOOL;
-        }else if (this.value1.evaluatable().equals(this.value2.evaluatable()) && !this.value1.evaluatable().equals(EvalType.TREE)){
-            return this.value1.evaluatable();
+        EvalType value1Type = this.value1.evaluatable();
+        EvalType value2Type = this.value2.evaluatable();
+        if (value1Type.equals(EvalType.SOFTTREE) || value2Type.equals(EvalType.SOFTTREE)){
+            return EvalType.SOFTTREE;
         }
+        else if (value1Type.equals(EvalType.HARDTREE) || value2Type.equals(EvalType.HARDTREE)){
+            return EvalType.HARDTREE;
+        }
+        else if ((value1Type.equals(EvalType.BOOL) && value2Type.equals(EvalType.BOOL)) || 
+        (value1Type.equals(EvalType.NUM) && value2Type.equals(EvalType.NUM) && (this.operator.equals(">") || this.operator.equals("<")))){
+            return EvalType.BOOL;
+        } 
+        else{
+            return EvalType.NUM;
+        }
+        
+    }
 
-        return EvalType.TREE;
+    @Override
+    public Object approximate(){
+        if (this.evaluatable().equals(EvalType.HARDTREE))
+            throw new IllegalSyntaxException("Undefined variable in "+this.toString());
+        return eval();
+    }
+
+    private Object eval(){
+        switch(this.operator){
+            case "+":
+            return (Double)this.value1.approximate() + (Double)this.value2.approximate();
+            case "-":
+            return (Double)this.value1.approximate() - (Double)this.value2.approximate();
+            case "/":
+            return (Double)this.value1.approximate() / (Double)this.value2.approximate();
+            case "*":
+            return (Double)this.value1.approximate() * (Double)this.value2.approximate();
+            case "^":
+            return Math.pow((Double)this.value1.approximate(), (Double)this.value2.approximate());
+            case "|":
+            return (Boolean)this.value1.approximate() || (Boolean)this.value2.approximate();
+            case "&":
+            return (Boolean)this.value1.approximate() && (Boolean)this.value2.approximate();
+            case ">":
+            return (Double)this.value1.approximate() > (Double)this.value2.approximate();
+            case "<":
+            return (Double)this.value1.approximate() < (Double)this.value2.approximate();
+            default:
+            throw new IllegalSyntaxException("Illegal operator on "+this.toString());
+        }
     }
 }
