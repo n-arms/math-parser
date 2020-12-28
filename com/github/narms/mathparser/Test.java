@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Test {
     public static void main(String[] args){
-        Lexer l = new Lexer("x+(1+2+x)");
+        Lexer l = new Lexer("-x");
         ArrayList<Syntax> struct = l.lex();
         System.out.println(struct);
         ExpressionSyntax e = (ExpressionSyntax) Parser.parseText(struct);
