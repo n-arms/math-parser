@@ -6,6 +6,7 @@ import com.github.narms.mathparser.Parser;
 import com.github.narms.mathparser.Syntax;
 import com.github.narms.mathparser.SyntaxType;
 import com.github.narms.mathparser.Token;
+import com.github.narms.mathparser.exceptions.IllegalSyntaxException;
 
 public class Paren extends Syntax {
     private ArrayList<Syntax> rawContents;
@@ -23,11 +24,11 @@ public class Paren extends Syntax {
 
     @Override
     public String toString() {
-        String output = "";
+        String output = "(";
         for (Syntax s: this.rawContents){
             output += ((Token)s).toString();
         }
-        return output;
+        return output+")";
     }
 
     public void printContents() {
@@ -59,6 +60,9 @@ public class Paren extends Syntax {
     }
 
 	public void trimTrailingParentheses() {
-        this.rawContents.remove(this.rawContents.size()-1);
+        if (((Token)this.rawContents.get(this.rawContents.size()-1)).getValue().equals(")"))
+            this.rawContents.remove(this.rawContents.size()-1);
+        else
+            throw new IllegalSyntaxException("Illegal closing char on "+this.toString());
 	}
 }

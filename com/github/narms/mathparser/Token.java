@@ -10,7 +10,7 @@ public class Token extends Syntax{
     private SyntaxType type;
     private String value;
     private static final char[] numbers = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'};
-    private static final char[] operators = {'+', '-', '/', '*', '&', '|', '>', '<', '^'};
+    private static final char[] operators = {'+', '-', '/', '*', '&', '|', '>', '<', '^', '~'};
     private static final char lpar = '(';
     private static final char rpar = ')';
     private static final char[] symbol = {'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 

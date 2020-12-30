@@ -106,4 +106,9 @@ public class UnaryOp extends ExpressionSyntax {
             throw new IllegalSyntaxException("Illegal operator on "+this.toString());
         }
     }
+
+    public String getOperator(){
+        return this.operator;
+    }
+
 }
