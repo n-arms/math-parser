@@ -256,7 +256,7 @@ public class Parser {
         }
         return output;
     }
-    public static ArrayList<Syntax> parseNegation(ArrayList<Syntax> structure){ //TODO logical negation, additive inverse
+    public static ArrayList<Syntax> parseNegation(ArrayList<Syntax> structure){
         int i = 1;
         if (structure.get(0) instanceof Token && ((Token)structure.get(0)).getValue().equals("-") && structure.get(1) instanceof ExpressionSyntax){
             structure.set(0, new UnaryOp("-", (ExpressionSyntax)structure.get(1)));
