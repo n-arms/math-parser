@@ -74,7 +74,9 @@ public class PolyOp extends ExpressionSyntax {
 
     @Override
     public ExpressionSyntax reduce() {
-        // TODO polyop reduce
+        for (int i = 0; i<values.size(); i++){
+            values.set(i, values.get(i).reduce());
+        }
         return this;
     }
 
