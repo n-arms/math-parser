@@ -50,11 +50,26 @@ public class Num extends Output{
                 return new Num(other.numValue()+this.numValue());
             }
             case "^":
-            throw new IllegalSyntaxException("use of WIP operator ^");//TODO, exponentiation
+            if (other instanceof Complex){
+                return new Complex(Math.cos(other.complexValue()[1]*Math.log(value))*Math.pow(value, other.complexValue()[0]), Math.sin(other.complexValue()[1]*Math.log(value))*Math.pow(value, other.complexValue()[0]));
+            }else{
+                assert (other instanceof Num);
+                return new Num(Math.pow(this.numValue(), other.numValue()));
+            }
             case ">":
-            throw new IllegalSyntaxException("use of WIP operator >");//TODO, comparison
+            if (other instanceof Complex){
+                return new Bool(value > ((Complex)other).magnitude().numValue());
+            }else{
+                assert (other instanceof Num);
+                return new Bool(value > other.numValue());
+            }
             case "<":
-            throw new IllegalSyntaxException("use of WIP operator <");
+            if (other instanceof Complex){
+                return new Bool(value < ((Complex)other).magnitude().numValue());
+            }else{
+                assert (other instanceof Num);
+                return new Bool(value < other.numValue());
+            }
             default:
             throw new IllegalTypeException("Illegal op '"+op+"' on Num.java");
         }
