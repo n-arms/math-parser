@@ -3,6 +3,7 @@ package com.github.narms.mathparser.expressions;
 import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
+import com.github.narms.mathparser.output.Output;
 
 public abstract class LiteralSyntax extends ExpressionSyntax {
 
@@ -10,7 +11,7 @@ public abstract class LiteralSyntax extends ExpressionSyntax {
     public abstract boolean hasVar(String name);
 
     @Override
-    public abstract boolean defVar(String name, Object value);
+    public abstract boolean defVar(String name, Output value);
 
     @Override
     public abstract String toString();

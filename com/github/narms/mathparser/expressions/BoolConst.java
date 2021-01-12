@@ -3,12 +3,14 @@ package com.github.narms.mathparser.expressions;
 import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
+import com.github.narms.mathparser.output.Bool;
+import com.github.narms.mathparser.output.Output;
 
 public class BoolConst extends LiteralSyntax {
-    private boolean value;
+    private Bool value;
 
     public BoolConst(boolean b){
-        this.value = b;
+        this.value = new Bool(b);
     }
 
     @Override
@@ -17,7 +19,7 @@ public class BoolConst extends LiteralSyntax {
     }
 
     @Override
-    public boolean defVar(String name, Object value) {
+    public boolean defVar(String name, Output value) {
         return false;
     }
 
@@ -52,7 +54,7 @@ public class BoolConst extends LiteralSyntax {
     }
 
     @Override
-    public Object approximate(){
+    public Output approximate(){
         return this.value;
     }
     

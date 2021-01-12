@@ -3,12 +3,12 @@ package com.github.narms.mathparser.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
 import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
 import com.github.narms.mathparser.exceptions.IllegalSyntaxException;
+import com.github.narms.mathparser.output.Num;
+import com.github.narms.mathparser.output.Output;
 
 public class PolyOp extends ExpressionSyntax {
     private String operator;
@@ -20,7 +20,7 @@ public class PolyOp extends ExpressionSyntax {
     }
 
     @Override
-    public Object approximate() {
+    public Output approximate() {
         if (this.evaluatable().equals(EvalType.HARDTREE)){
             throw new IllegalSyntaxException("Undefined Variable in "+this);
         }
@@ -37,7 +37,7 @@ public class PolyOp extends ExpressionSyntax {
     }
 
     @Override
-    public boolean defVar(String name, Object value) {
+    public boolean defVar(String name, Output value) {
         boolean output = false;
         for (ExpressionSyntax es: this.values){
             output = es.defVar(name, value) | output;
@@ -49,8 +49,11 @@ public class PolyOp extends ExpressionSyntax {
     public String toString() {
         StringBuffer output = new StringBuffer();
         output.append('(');
-        for (ExpressionSyntax es: this.values)
-        output.append(es.toString());
+        for (ExpressionSyntax es: this.values){
+            output.append(es.toString());
+            output.append(" + ");
+        }
+        
         output.append(')');
         return output.toString();
     }
@@ -92,8 +95,7 @@ public class PolyOp extends ExpressionSyntax {
                 }
                 break;
                 case HARDTREE:
-                state = EvalType.HARDTREE;
-                break;
+                return EvalType.HARDTREE;
                 default:
                 break;
             }
@@ -106,17 +108,17 @@ public class PolyOp extends ExpressionSyntax {
         return SyntaxType.POLYOPEXPR;
     }
     
-    private Double eval(){
-        Double output;
+    private Output eval(){
+        Output output;
         switch (this.operator){
             case "+":
-            output = 0.0;
+            output = new Num(0);
             for (ExpressionSyntax es: this.values)
-                output+=(Double)es.approximate();
+                output.applyBin("+", es.approximate());
             case "*":
-            output = 1.0;
+            output = new Num(1);
             for (ExpressionSyntax es: this.values)
-                output+=(Double)es.approximate();
+                output.applyBin("*", es.approximate());
             default:
             throw new IllegalSyntaxException("Illegal op "+this.operator+" on polyOp "+this);
         }

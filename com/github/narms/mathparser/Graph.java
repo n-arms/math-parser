@@ -5,7 +5,8 @@ import java.awt.Graphics;
 
 import javax.swing.JFrame;
 
-import com.github.narms.mathparser.expressions.Const;
+import com.github.narms.mathparser.output.Num;
+
 import java.awt.Color;
 public class Graph extends Canvas{
     private static final long serialVersionUID = 1L;
@@ -23,8 +24,8 @@ public class Graph extends Canvas{
         this.scale = scale;
         int i = screenWidth/-2;
         while (i<width/2){
-            this.expression.defVar("x", i*this.scale);
-            this.values[i+screenWidth/2] = (int)(height-(((Number)((Const)expression.reduce()).getValue()).doubleValue()/this.scale));
+            this.expression.defVar("x", new Num(i*this.scale));
+            this.values[i+screenWidth/2] = (int)(height-((expression.approximate().numValue()).doubleValue()/this.scale));
             i++;
         }
     }

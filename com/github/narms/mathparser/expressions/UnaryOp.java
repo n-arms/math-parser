@@ -4,6 +4,7 @@ import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
 import com.github.narms.mathparser.exceptions.IllegalSyntaxException;
+import com.github.narms.mathparser.output.Output;
 
 public class UnaryOp extends ExpressionSyntax {
     private ExpressionSyntax contents;
@@ -20,7 +21,7 @@ public class UnaryOp extends ExpressionSyntax {
     }
 
     @Override
-    public boolean defVar(String name, Object value) {
+    public boolean defVar(String name, Output value) {
         return this.contents.defVar(name, value);
     }
 
@@ -48,7 +49,7 @@ public class UnaryOp extends ExpressionSyntax {
             case "-":
             switch(this.contents.evaluatable()){
                 case NUM:
-                return new Const((Double)this.eval());
+                return new Const(this.eval());
                 case BOOL:
                 default:
                 return (new BinOp("*", this.contents, new Const(-1))).reduce();
@@ -59,7 +60,7 @@ public class UnaryOp extends ExpressionSyntax {
                 case BOOL:
                 throw new IllegalSyntaxException("Illegal operand return type 'bool' for "+this.toString());
                 case NUM:
-                return new Const((Double)this.eval());
+                return new Const(this.eval());
                 default:
                 return new UnaryOp("1/", this.contents);
 
@@ -90,18 +91,18 @@ public class UnaryOp extends ExpressionSyntax {
     }
 
     @Override
-    public Object approximate(){
+    public Output approximate(){
         return this.eval();
     }
 
-    private Object eval(){
+    private Output eval(){
         switch (this.operator){
             case "-":
-            return -1*(Double)this.contents.approximate();
+            return this.contents.approximate().apply("-");
             case "1/":
-            return 1/(Double)this.contents.approximate();
+            return this.contents.approximate().apply("1/");
             case "~":
-            return !(Boolean)this.contents.approximate();
+            return this.contents.approximate().apply("~");
             default:
             throw new IllegalSyntaxException("Illegal operator on "+this.toString());
         }

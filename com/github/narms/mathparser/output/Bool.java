@@ -28,5 +28,26 @@ public class Bool extends Output{
     public Double[] complexValue() {
         throw new IllegalTypeException("Cannot convert from Num to Bool");
     }
+
+    @Override
+    public Output applyBin(String op, Output other) {
+        if (!(other instanceof Bool))
+        throw new IllegalTypeException("Cannot perform op '"+op+"' on Bool.java");
+        switch (op){
+            case "|":
+            return new Bool(this.value || other.boolValue());
+            case "&":
+            return new Bool(this.value && other.boolValue());
+            default:
+            throw new IllegalTypeException("Cannot perform op '"+op+"' Bool.java");
+        }
+    }
+
+    @Override
+    public Output apply(String op){
+        if (op.equals("~"))
+        return new Bool(!this.value);
+        throw new IllegalTypeException("Cannot perform op '"+op+"' Bool.java");
+    }
     
 }

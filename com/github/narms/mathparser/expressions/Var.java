@@ -4,10 +4,11 @@ import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
 import com.github.narms.mathparser.exceptions.UndefinedVariableException;
+import com.github.narms.mathparser.output.Output;
 
 public class Var extends LiteralSyntax {
     private String name;
-    private Object value;
+    private Output value;
     private boolean defined;
 
     public Var(String name){
@@ -29,7 +30,7 @@ public class Var extends LiteralSyntax {
     }
 
     @Override
-    public boolean defVar(String name, Object value) {
+    public boolean defVar(String name, Output value) {
         if (this.name.equals(name)){
             this.value = value;
             this.defined = true;
@@ -62,17 +63,14 @@ public class Var extends LiteralSyntax {
         return EvalType.HARDTREE;
     }
 
-    public Object getValue(){
+    public Output getValue(){
         if (this.defined){
-            if (this.value instanceof Number){
-                return ((Number)this.value).doubleValue();
-            }
             return this.value;
         }
         throw new UndefinedVariableException("Undefined Variable "+this.name);
     }
 
-    public Object approximate(){
+    public Output approximate(){
         return this.getValue();
     }
 }
