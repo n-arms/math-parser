@@ -1,8 +1,5 @@
 package com.github.narms.mathparser.output;
 
-import javax.management.RuntimeErrorException;
-
-import com.github.narms.mathparser.exceptions.IllegalSyntaxException;
 import com.github.narms.mathparser.exceptions.IllegalTypeException;
 
 public class Num extends Output{
@@ -33,7 +30,6 @@ public class Num extends Output{
 
     @Override
     public Output applyBin(String op, Output other) {
-        assert (other instanceof Bool);
         switch (op){
             case "+":
             if (other instanceof Complex){
@@ -47,7 +43,7 @@ public class Num extends Output{
                 return new Complex(other.complexValue()[0]*this.numValue(), other.complexValue()[1]*this.numValue());
             }else{
                 assert (other instanceof Num);
-                return new Num(other.numValue()+this.numValue());
+                return new Num(other.numValue()*this.numValue());
             }
             case "^":
             if (other instanceof Complex){

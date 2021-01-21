@@ -14,9 +14,19 @@ public class PolyOp extends ExpressionSyntax {
     private String operator;
     private List<ExpressionSyntax> values;
 
-    public PolyOp(List<ExpressionSyntax> values, String operator){
-        this.values = values;
+    public PolyOp(ExpressionSyntax value, String operator){
+        this.values = new ArrayList<ExpressionSyntax>();
+        values.add(value);
         this.operator = operator;
+    }
+
+    public PolyOp(String operator){
+        this.values = new ArrayList<ExpressionSyntax>();
+        this.operator = operator;
+    }
+
+    public void addValue(ExpressionSyntax value){
+        values.add(value);
     }
 
     @Override
@@ -49,8 +59,9 @@ public class PolyOp extends ExpressionSyntax {
     public String toString() {
         StringBuffer output = new StringBuffer();
         output.append('(');
-        for (ExpressionSyntax es: this.values){
-            output.append(es.toString());
+        for (int i = 0; i<this.values.size(); i++){
+            output.append(this.values.get(i).toString());
+            if (i != (this.values.size()-1))
             output.append(" + ");
         }
         
@@ -63,11 +74,11 @@ public class PolyOp extends ExpressionSyntax {
         
         switch (operator){
             case "+":
-            List<ExpressionSyntax> outputAdd = new ArrayList<ExpressionSyntax>();
+            PolyOp output = new PolyOp("+");
             for (ExpressionSyntax es: values){
-                outputAdd.add(es.derivative(variable));
+                output.addValue(es);
             }
-            return new PolyOp(outputAdd, "+");
+            return output;
             case "*":
             throw new IllegalSyntaxException("Undefiend behaviour");//TODO: polyop multiplicative derivative
             default:
@@ -114,11 +125,13 @@ public class PolyOp extends ExpressionSyntax {
             case "+":
             output = new Num(0);
             for (ExpressionSyntax es: this.values)
-                output.applyBin("+", es.approximate());
+                output = output.applyBin("+", es.approximate());
+            return output;
             case "*":
             output = new Num(1);
             for (ExpressionSyntax es: this.values)
-                output.applyBin("*", es.approximate());
+                output = output.applyBin("*", es.approximate());
+            return output;
             default:
             throw new IllegalSyntaxException("Illegal op "+this.operator+" on polyOp "+this);
         }
