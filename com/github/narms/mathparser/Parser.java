@@ -75,6 +75,7 @@ public class Parser {
         }
         return structure;
     }
+    /*
     public static ArrayList<Syntax> parseFactor(ArrayList<Syntax> structure){
         ArrayList<Syntax> output = structure;
         int i = 1;
@@ -104,7 +105,38 @@ public class Parser {
             }
         }
         return output;
+    }*/
+
+    public static ArrayList<Syntax> parseFactor(ArrayList<Syntax> structure){
+        int i = 1;
+        while(i<structure.size()-1){
+            if (match(structure.get(i), "*") || match(structure.get(i), "/")){
+                
+                if (match(structure.get(i), "*")){
+                    structure.set(i, new PolyOp((ExpressionSyntax)structure.get(i-1), "*"));
+                    ((PolyOp)structure.get(i)).addValue((ExpressionSyntax)structure.get(i+1));
+                }else{
+                    structure.set(i, new PolyOp((ExpressionSyntax)structure.get(i-1), "*"));
+                    ((PolyOp)structure.get(i)).addValue(new UnaryOp("1/", (ExpressionSyntax)structure.get(i+1)));
+                }
+                structure.remove(i+1);
+                structure.remove(i-1);
+                int polyindex = i-1;
+                while (i<structure.size()-1 && (match(structure.get(i), "*") || match(structure.get(i), "/"))){
+                    if (match(structure.get(i), "*")){
+                        ((PolyOp)structure.get(polyindex)).addValue((ExpressionSyntax)structure.get(i+1));
+                    }else{
+                        ((PolyOp)structure.get(polyindex)).addValue(new UnaryOp("1/", (ExpressionSyntax)structure.get(i+1)));
+                    }
+                    structure.remove(i+1);
+                    structure.remove(i);
+                }
+
+            }else{i++; }
+        }
+        return structure;
     }
+
     public static ArrayList<Syntax> parseNegation(ArrayList<Syntax> structure){
         int i = 1;
         if (structure.get(0) instanceof Token && ((Token)structure.get(0)).getValue().equals("-") && structure.get(1) instanceof ExpressionSyntax){
@@ -119,31 +151,19 @@ public class Parser {
         }
         return structure;
     }
-    /*
-    public static ArrayList<Syntax> parseAddition(ArrayList<Syntax> structure){
-        int i = 1;
-        while (i<structure.size()-1){
-            if (structure.get(i) instanceof Token && (((Token)structure.get(i)).getValue().equals("+") || ((Token)structure.get(i)).getValue().equals("-")) && (structure.get(i-1) instanceof ExpressionSyntax) && (structure.get(i+1) instanceof ExpressionSyntax)){
-                if (((Token)structure.get(i)).getValue().equals("+")){
-                    structure.set(i, new BinOp("+", (ExpressionSyntax)structure.get(i-1), (ExpressionSyntax)structure.get(i+1)));
-                    structure.remove(i+1);
-                    structure.remove(i-1);
-                }else{
-                    structure.set(i, new BinOp("+", (ExpressionSyntax)structure.get(i-1), new UnaryOp("-", (ExpressionSyntax)structure.get(i+1))));
-                    structure.remove(i+1);
-                    structure.remove(i-1);
-                }  
-            }else{i++;}
-        }
-        return structure;
-    }*/
+
     public static ArrayList<Syntax> parseAddition(ArrayList<Syntax> structure){
         int i = 1;
         while (i<structure.size()-1){
             if (structure.get(i) instanceof Token && (((Token)structure.get(i)).getValue().equals("+") || ((Token)structure.get(i)).getValue().equals("-")) && (structure.get(i-1) instanceof ExpressionSyntax) && (structure.get(i+1) instanceof ExpressionSyntax)){
                 System.out.println("entering polyop constructor");
-                structure.set(i, new PolyOp((ExpressionSyntax)structure.get(i-1), "+"));
-                ((PolyOp)structure.get(i)).addValue((ExpressionSyntax)structure.get(i+1));
+                if (match(structure.get(i), "+")){
+                    structure.set(i, new PolyOp((ExpressionSyntax)structure.get(i-1), "+"));
+                    ((PolyOp)structure.get(i)).addValue((ExpressionSyntax)structure.get(i+1));
+                }else{
+                    structure.set(i, new PolyOp((ExpressionSyntax)structure.get(i-1), "+"));
+                    ((PolyOp)structure.get(i)).addValue(new UnaryOp("-", (ExpressionSyntax)structure.get(i+1)));
+                }
                 structure.remove(i+1);
                 structure.remove(i-1);
                 int polyindex = i-1;

@@ -62,7 +62,7 @@ public class PolyOp extends ExpressionSyntax {
         for (int i = 0; i<this.values.size(); i++){
             output.append(this.values.get(i).toString());
             if (i != (this.values.size()-1))
-            output.append(" + ");
+            output.append(" "+this.operator+" ");
         }
         
         output.append(')');
