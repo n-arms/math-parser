@@ -52,7 +52,7 @@ public class Parser {
                     output.add(new Const(Double.parseDouble(((Token)structure.get(i)).getValue())));
                     break;
                     case SYMTOKEN:
-                    output.add(new Var(((Token)output.get(i)).getValue()));
+                    output.add(new Var(((Token)structure.get(i)).getValue()));
                     break;
                     case KEYVARTOKEN:
                     output.add(new BoolConst(Boolean.parseBoolean(((Token)structure.get(i)).getValue())));
@@ -75,37 +75,6 @@ public class Parser {
         }
         return structure;
     }
-    /*
-    public static ArrayList<Syntax> parseFactor(ArrayList<Syntax> structure){
-        ArrayList<Syntax> output = structure;
-        int i = 1;
-        while (i<output.size()-1){
-            if (output.get(i) instanceof Token && output.get(i-1) instanceof ExpressionSyntax && output.get(i+1) instanceof ExpressionSyntax){
-                if (((Token)output.get(i)).getValue().equals("*")){
-                    output.set(i, new BinOp("*", 
-                    (ExpressionSyntax)output.get(i-1), 
-                    (ExpressionSyntax)output.get(i+1)));
-                    output.remove(i+1);
-                    output.remove(i-1);
-                }else if (((Token)output.get(i)).getValue().equals("/")){
-                    output.set(i, new BinOp("*", (ExpressionSyntax)output.get(i-1), new UnaryOp("1/", (ExpressionSyntax)output.get(i+1))));
-                    structure.remove(i+1);
-                    structure.remove(i-1);
-                }else{i++;}
-            } else if (!(output.get(i) instanceof Token) && !(output.get(i-1) instanceof Token)){
-                output.set(i, new BinOp("*", (ExpressionSyntax) output.get(i), (ExpressionSyntax)output.get(i-1)));
-                output.remove(i-1);
-            }else{i++;}
-        }
-        if (output.size()>1){
-            i = output.size()-1;
-            if (!(output.get(i) instanceof Token) && !(output.get(i-1) instanceof Token)){
-                output.set(i, new BinOp("*", (ExpressionSyntax) output.get(i), (ExpressionSyntax) output.get(i-1)));
-                output.remove(i-1);
-            }
-        }
-        return output;
-    }*/
 
     public static ArrayList<Syntax> parseFactor(ArrayList<Syntax> structure){
         int i = 1;

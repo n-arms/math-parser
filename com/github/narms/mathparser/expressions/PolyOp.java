@@ -25,6 +25,11 @@ public class PolyOp extends ExpressionSyntax {
         this.operator = operator;
     }
 
+    public PolyOp(ArrayList<ExpressionSyntax> values, String operator){
+        this.values = values;
+        this.operator = operator;
+    }
+
     public void addValue(ExpressionSyntax value){
         values.add(value);
     }
@@ -91,7 +96,17 @@ public class PolyOp extends ExpressionSyntax {
         for (int i = 0; i<values.size(); i++){
             values.set(i, values.get(i).reduce());
         }
-        return this;
+        sort();
+        ArrayList<ExpressionSyntax> reduced = new ArrayList<ExpressionSyntax>();
+        reduced.add(values.get(0));
+        for (int i = 1; i<values.size(); i++){
+            if (reduced.get(reduced.size()-1).evaluatable().equals(EvalType.NUM) && values.get(i).evaluatable().equals(EvalType.NUM)){
+                reduced.set(reduced.size()-1, new Const(new Num(values.get(i).approximate().applyBin(this.operator, reduced.get(reduced.size()-1).approximate()).numValue())));
+            }else{
+                reduced.add(values.get(i));
+            }
+        }
+        return new PolyOp(reduced, this.operator);
     }
 
     @Override
@@ -134,6 +149,35 @@ public class PolyOp extends ExpressionSyntax {
             return output;
             default:
             throw new IllegalSyntaxException("Illegal op "+this.operator+" on polyOp "+this);
+        }
+    }
+
+    private void sort(){
+        List<List<ExpressionSyntax>> buckets = new ArrayList<List<ExpressionSyntax>>();
+        for (int i = 0; i<3; i++)
+        buckets.add(new ArrayList<ExpressionSyntax>());
+
+        for (ExpressionSyntax e: values){
+            switch (e.evaluatable()){
+                case HARDTREE:
+                buckets.get(2).add(e);
+                break;
+                case SOFTTREE:
+                buckets.get(1).add(e);
+                break;
+                case NUM:
+                buckets.get(0).add(e);
+                break;
+                default:
+                throw new IllegalSyntaxException("Illegal evaluatable type on "+this);
+            }
+        }
+        int index = 0;
+        for (List<ExpressionSyntax> i: buckets){
+            for (ExpressionSyntax j: i){
+                values.set(index, j);
+                index++;
+            }
         }
     }
 }

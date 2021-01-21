@@ -1,32 +1,25 @@
 package com.github.narms.mathparser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Lexer {
-    private ArrayList<Syntax> tokens;
-    private char[] input;
-
-
-    public Lexer(String input){
-        this.input = input.toCharArray();
-        this.tokens = new ArrayList<Syntax>();
-        this.tokens.add(new Token());
-    }
-
-    public ArrayList<Syntax> lex(){
-        for (char c: this.input){
+    public static ArrayList<Syntax> lex(String input){
+        ArrayList<Syntax> tokens = new ArrayList<Syntax>();
+        tokens.add(new Token());
+        for (char c: input.toCharArray()){
             if (c!=' '){
-                if (((Token)this.tokens.get(this.tokens.size()-1)).matchType(c)){
-                    ((Token)this.tokens.get(this.tokens.size()-1)).addChar(c);
-                    ((Token)this.tokens.get(this.tokens.size()-1)).setType();
+                if (((Token)tokens.get(tokens.size()-1)).matchType(c)){
+                    ((Token)tokens.get(tokens.size()-1)).addChar(c);
+                    ((Token)tokens.get(tokens.size()-1)).setType();
                 }
                 else{
-                    this.tokens.add(new Token());
-                    ((Token)this.tokens.get(this.tokens.size()-1)).addChar(c);
-                    ((Token)this.tokens.get(this.tokens.size()-1)).setType();
+                    tokens.add(new Token());
+                    ((Token)tokens.get(tokens.size()-1)).addChar(c);
+                    ((Token)tokens.get(tokens.size()-1)).setType();
+                }
             }
         }
-        }
-        return this.tokens;
+        return tokens;
     }
 }
