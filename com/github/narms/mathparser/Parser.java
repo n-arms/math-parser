@@ -148,7 +148,11 @@ public class Parser {
                 structure.remove(i-1);
                 int polyindex = i-1;
                 while (i<structure.size()-1 && (match(structure.get(i), "+") || match(structure.get(i), "-"))){
-                    ((PolyOp)structure.get(polyindex)).addValue((ExpressionSyntax)structure.get(i+1));
+                    if (match(structure.get(i), "+")){
+                        ((PolyOp)structure.get(polyindex)).addValue((ExpressionSyntax)structure.get(i+1));
+                    }else{
+                        ((PolyOp)structure.get(polyindex)).addValue(new UnaryOp("-", (ExpressionSyntax)structure.get(i+1)));
+                    }
                     structure.remove(i+1);
                     structure.remove(i);
                 }
