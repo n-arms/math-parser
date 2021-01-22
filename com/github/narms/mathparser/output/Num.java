@@ -50,7 +50,11 @@ public class Num extends Output{
                 return new Complex(Math.cos(other.complexValue()[1]*Math.log(value))*Math.pow(value, other.complexValue()[0]), Math.sin(other.complexValue()[1]*Math.log(value))*Math.pow(value, other.complexValue()[0]));
             }else{
                 assert (other instanceof Num);
-                return new Num(Math.pow(this.numValue(), other.numValue()));
+                if (value > 0){
+                    return new Num(Math.pow(this.numValue(), other.numValue()));
+                }
+                assert (other.numValue().equals(0.5));
+                return new Complex(0, Math.sqrt(-1*value));
             }
             case ">":
             if (other instanceof Complex){

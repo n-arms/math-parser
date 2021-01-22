@@ -101,7 +101,7 @@ public class PolyOp extends ExpressionSyntax {
         reduced.add(values.get(0));
         for (int i = 1; i<values.size(); i++){
             if (reduced.get(reduced.size()-1).evaluatable().equals(EvalType.NUM) && values.get(i).evaluatable().equals(EvalType.NUM)){
-                reduced.set(reduced.size()-1, new Const(new Num(values.get(i).approximate().applyBin(this.operator, reduced.get(reduced.size()-1).approximate()).numValue())));
+                reduced.set(reduced.size()-1, new Const(values.get(i).approximate().applyBin(this.operator, reduced.get(reduced.size()-1).approximate())));
             }else{
                 reduced.add(values.get(i));
             }
