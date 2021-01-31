@@ -1,7 +1,6 @@
 package com.github.narms.mathparser;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Lexer {
     public static ArrayList<Syntax> lex(String input){

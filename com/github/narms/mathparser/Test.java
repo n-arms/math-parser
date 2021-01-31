@@ -4,11 +4,11 @@ import com.github.narms.mathparser.output.Num;
 
 public class Test {
     public static void main(String[] args){
-        ExpressionSyntax mySyntax = (ExpressionSyntax) Parser.parseText(Lexer.lex("a + b * 5"));
+        ExpressionSyntax mySyntax = (ExpressionSyntax) Parser.parseText(Lexer.lex("x*3"));
         System.out.println(mySyntax);
-        mySyntax.defVar("a", new Num(17));
+        mySyntax = mySyntax.derivative("x");
         System.out.println(mySyntax);
-        mySyntax.defVar("b", new Num(42));
-        System.out.println(mySyntax.approximate());
+        mySyntax = mySyntax.reduce();
+        System.out.println(mySyntax);
     }
 }

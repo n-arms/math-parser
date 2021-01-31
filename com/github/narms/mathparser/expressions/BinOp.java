@@ -18,11 +18,10 @@ public class BinOp extends ExpressionSyntax {
 
     @Override
     public ExpressionSyntax derivative(String variable){
-        if (this.operator.equals("+")){
-            return new BinOp("+", this.value1.derivative(variable), this.value2.derivative(variable));
-        }else if (this.operator.equals("*")){
-            return new BinOp("+", new BinOp("*", this.value1, this.value2.derivative(variable)), 
-            new BinOp("*", this.value2, this.value1.derivative(variable)));
+        if (this.operator.equals("^")){
+            
+        }else{
+
         }
         throw new IllegalArgumentException();
     }
@@ -101,10 +100,6 @@ public class BinOp extends ExpressionSyntax {
 
     private Output eval(){
         switch(this.operator){
-            case "+":
-            return this.value1.approximate().applyBin("+", this.value2.approximate());
-            case "*":
-            return this.value1.approximate().applyBin("*", this.value2.approximate());
             case "^":
             return this.value1.approximate().applyBin("^", this.value2.approximate());
             case "|":

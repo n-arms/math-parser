@@ -22,7 +22,7 @@ public class Const extends ExpressionSyntax {
 
     @Override
     public ExpressionSyntax derivative(String name){
-        return new Const(0);
+        return new Const(new Num(0));
     }
 
     @Override

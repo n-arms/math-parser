@@ -4,6 +4,7 @@ import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
 import com.github.narms.mathparser.exceptions.UndefinedVariableException;
+import com.github.narms.mathparser.output.Num;
 import com.github.narms.mathparser.output.Output;
 
 public class Var extends ExpressionSyntax {
@@ -19,9 +20,9 @@ public class Var extends ExpressionSyntax {
     @Override
     public ExpressionSyntax derivative(String name){
         if (this.name.equals(name)){
-            return new Const(1);
+            return new Const(new Num(1));
         }
-        return new Const(0);
+        return new Const(new Num(0));
     }
 
     @Override

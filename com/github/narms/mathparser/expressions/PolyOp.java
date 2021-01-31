@@ -10,6 +10,7 @@ import com.github.narms.mathparser.exceptions.IllegalSyntaxException;
 import com.github.narms.mathparser.output.Num;
 import com.github.narms.mathparser.output.Output;
 
+
 public class PolyOp extends ExpressionSyntax {
     private String operator;
     private List<ExpressionSyntax> values;
@@ -76,16 +77,28 @@ public class PolyOp extends ExpressionSyntax {
 
     @Override
     public ExpressionSyntax derivative(String variable) {
-        
+        PolyOp output = new PolyOp("+");
         switch (operator){
             case "+":
-            PolyOp output = new PolyOp("+");
             for (ExpressionSyntax es: values){
-                output.addValue(es);
+                output.addValue(es.derivative(variable));
             }
             return output;
             case "*":
-            throw new IllegalSyntaxException("Undefiend behaviour");//TODO: polyop multiplicative derivative
+            List<PolyOp> terms = new ArrayList<PolyOp>();
+            for (int i = 0; i<values.size(); i++){
+                terms.add(new PolyOp("*"));
+                for (int j = 0; j<values.size(); j++){
+                    if (j==i){
+                        terms.get(i).addValue(values.get(j).derivative(variable));
+                    }else{
+                        terms.get(i).addValue(values.get(j));
+                    }
+                }
+            }
+            for (PolyOp p: terms)
+            output.addValue(p);
+            return output;
             default:
             throw new IllegalSyntaxException("Undefined operator for "+this); 
         }
