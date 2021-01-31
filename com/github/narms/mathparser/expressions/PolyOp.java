@@ -106,7 +106,9 @@ public class PolyOp extends ExpressionSyntax {
                 reduced.add(values.get(i));
             }
         }
+        if (reduced.size() > 1)
         return new PolyOp(reduced, this.operator);
+        return reduced.get(0);
     }
 
     @Override

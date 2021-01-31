@@ -4,8 +4,11 @@ import com.github.narms.mathparser.output.Num;
 
 public class Test {
     public static void main(String[] args){
-        ExpressionSyntax mySyntax = (ExpressionSyntax) Parser.parseText(Lexer.lex("(-4)^0.5*5*(-1)^0.5"));
+        ExpressionSyntax mySyntax = (ExpressionSyntax) Parser.parseText(Lexer.lex("false | (~true)"));
         System.out.println(mySyntax);
-        System.out.println(mySyntax.reduce());
+        mySyntax.defVar("a", new Num(17));
+        System.out.println(mySyntax);
+        mySyntax.defVar("b", new Num(42));
+        System.out.println(mySyntax.approximate());
     }
 }

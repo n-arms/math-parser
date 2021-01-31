@@ -17,7 +17,7 @@ public class Token extends Syntax{
     's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 
     'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-    public static final String[] keyVars = {"true", "false"};
+    public static final String[] keyVars = {"true", "false", "i"};
 
     public Token(){
         this.value = "";

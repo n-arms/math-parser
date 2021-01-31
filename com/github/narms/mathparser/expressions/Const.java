@@ -4,6 +4,7 @@ import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
 import com.github.narms.mathparser.Token;
+import com.github.narms.mathparser.output.Bool;
 import com.github.narms.mathparser.output.Num;
 import com.github.narms.mathparser.output.Output;
 
@@ -51,7 +52,11 @@ public class Const extends LiteralSyntax {
 
     @Override
     public EvalType evaluatable(){
-        return EvalType.NUM;
+        if (value instanceof Bool){
+            return EvalType.BOOL;
+        }else{
+            return EvalType.NUM;
+        }
     }
 
     @Override

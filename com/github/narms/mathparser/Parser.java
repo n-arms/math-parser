@@ -1,9 +1,9 @@
 package com.github.narms.mathparser;
 
-
 import java.util.ArrayList;
 
 import com.github.narms.mathparser.expressions.*;
+import com.github.narms.mathparser.output.Bool;
 import com.github.narms.mathparser.exceptions.ParserException;
 
 public class Parser {
@@ -55,7 +55,7 @@ public class Parser {
                     output.add(new Var(((Token)structure.get(i)).getValue()));
                     break;
                     case KEYVARTOKEN:
-                    output.add(new BoolConst(Boolean.parseBoolean(((Token)structure.get(i)).getValue())));
+                    output.add(new Const(new Bool(Boolean.parseBoolean(((Token)structure.get(i)).getValue()))));
                     break;
                     default:
                     output.add(structure.get(i));
@@ -125,7 +125,6 @@ public class Parser {
         int i = 1;
         while (i<structure.size()-1){
             if (structure.get(i) instanceof Token && (((Token)structure.get(i)).getValue().equals("+") || ((Token)structure.get(i)).getValue().equals("-")) && (structure.get(i-1) instanceof ExpressionSyntax) && (structure.get(i+1) instanceof ExpressionSyntax)){
-                System.out.println("entering polyop constructor");
                 if (match(structure.get(i), "+")){
                     structure.set(i, new PolyOp((ExpressionSyntax)structure.get(i-1), "+"));
                     ((PolyOp)structure.get(i)).addValue((ExpressionSyntax)structure.get(i+1));
@@ -150,7 +149,12 @@ public class Parser {
         return structure;
     }
     public static ArrayList<Syntax> parseLogic(ArrayList<Syntax> structure){
-        int i = 1; 
+        if (structure.get(0) instanceof Token && structure.get(1) instanceof ExpressionSyntax && ((Token)structure.get(0)).getValue().equals("~")){
+            structure.set(0, new UnaryOp("~", (ExpressionSyntax)structure.get(1)));
+            structure.remove(1);
+        }
+
+        int i = 1;
         while (i<structure.size()-1){
             if (structure.get(i) instanceof Token && (structure.get(i-1) instanceof ExpressionSyntax) && (structure.get(i+1) instanceof ExpressionSyntax)){
                 switch (((Token)structure.get(i)).getValue()){
@@ -165,13 +169,18 @@ public class Parser {
                     structure.remove(i-1);
                     break;
                     case "|":
-                    structure.set(i, new BinOp("|", (ExpressionSyntax)structure.get(i-1), (ExpressionSyntax)structure.get(i+1)));structure.remove(i+1);
+                    structure.set(i, new BinOp("|", (ExpressionSyntax)structure.get(i-1), (ExpressionSyntax)structure.get(i+1)));
+                    structure.remove(i+1);
                     structure.remove(i-1);
                     break;
                     case "&":
                     structure.set(i, new BinOp("&", (ExpressionSyntax)structure.get(i-1), (ExpressionSyntax)structure.get(i+1)));
                     structure.remove(i+1);
                     structure.remove(i-1);
+                    break;
+                    case "~":
+                    structure.set(i, new UnaryOp("~", (ExpressionSyntax)structure.get(i+1)));
+                    structure.remove(i+1);
                     break;
                     default:
                     i++;

@@ -68,7 +68,7 @@ public class UnaryOp extends ExpressionSyntax {
             case "~":
             switch (this.contents.evaluatable()){
                 case BOOL:
-                return new BoolConst(!(Boolean)((BoolConst)this.contents).getValue());
+                return new Const(this.eval());
                 case NUM:
                 throw new IllegalSyntaxException("Illegal operand return type 'num' for "+this.toString());
                 default:
