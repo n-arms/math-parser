@@ -8,7 +8,7 @@ import com.github.narms.mathparser.output.Bool;
 import com.github.narms.mathparser.output.Num;
 import com.github.narms.mathparser.output.Output;
 
-public class Const extends LiteralSyntax {
+public class Const extends ExpressionSyntax {
     private Output value;
     public Const(Token t){
         this.value = new Num(Double.parseDouble(t.getValue()));
@@ -59,7 +59,6 @@ public class Const extends LiteralSyntax {
         }
     }
 
-    @Override
     public Output getValue(){
         return this.value;
     }

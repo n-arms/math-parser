@@ -6,7 +6,7 @@ import com.github.narms.mathparser.SyntaxType;
 import com.github.narms.mathparser.exceptions.UndefinedVariableException;
 import com.github.narms.mathparser.output.Output;
 
-public class Var extends LiteralSyntax {
+public class Var extends ExpressionSyntax {
     private String name;
     private Output value;
     private boolean defined;
