@@ -107,6 +107,7 @@ public class PolyOp extends ExpressionSyntax {
     @Override
     public ExpressionSyntax reduce() {
         for (int i = 0; i<values.size(); i++){
+            if (values.get(i).evaluatable()==EvalType.NUM)
             values.set(i, values.get(i).reduce());
         }
         sort();
@@ -193,6 +194,34 @@ public class PolyOp extends ExpressionSyntax {
                 values.set(index, j);
                 index++;
             }
+        }
+    }
+
+    @Override
+    public ExpressionSyntax normalize(){
+        for (ExpressionSyntax es: values){
+            es = es.reduce();
+            es = es.normalize();
+        }
+        
+        return this.reduce(); //TODO
+    }
+
+    @Override
+    public int degree(){
+        switch (this.operator){
+            case "+":
+            int max = 0;
+            for (ExpressionSyntax es: values)
+            max = (max > es.degree()) ? max : es.degree();
+            return max;
+            case "*":
+            int total = 0;
+            for (ExpressionSyntax es: values)
+            total += es.degree();
+            return total;
+            default:
+            throw new IllegalSyntaxException("Illegal op "+this.operator+" on polyOp "+this);
         }
     }
 }

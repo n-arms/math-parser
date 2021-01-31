@@ -10,4 +10,6 @@ public abstract class ExpressionSyntax extends Syntax{
     public abstract ExpressionSyntax derivative(String variable);
     public abstract ExpressionSyntax reduce();
     public abstract EvalType evaluatable();
+    public abstract ExpressionSyntax normalize();
+    public abstract int degree();
 }

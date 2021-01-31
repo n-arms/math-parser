@@ -87,6 +87,8 @@ public class UnaryOp extends ExpressionSyntax {
 
     @Override
     public EvalType evaluatable(){
+        if (this.operator.equals("1/"))
+        return EvalType.SOFTTREE;
         return this.contents.evaluatable();
     }
 
@@ -110,6 +112,18 @@ public class UnaryOp extends ExpressionSyntax {
 
     public String getOperator(){
         return this.operator;
+    }
+
+    @Override
+    public ExpressionSyntax normalize(){
+        this.contents = this.contents.reduce();
+        this.contents = this.contents.normalize();
+        return this;
+    }
+
+    @Override
+    public int degree(){
+        return this.contents.degree();
     }
 
 }

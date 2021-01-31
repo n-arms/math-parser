@@ -114,4 +114,22 @@ public class BinOp extends ExpressionSyntax {
             throw new IllegalSyntaxException("Illegal operator on "+this.toString());
         }
     }
+
+    @Override
+    public ExpressionSyntax normalize(){
+        this.value1 = this.value1.reduce();
+        this.value1 = this.value1.normalize();
+        this.value2 = this.value2.reduce();
+        this.value2 = this.value2.normalize();
+        return this.reduce();
+    }
+
+    @Override
+    public int degree(){
+        if (this.operator.equals("^")){
+            if (this.value2.evaluatable()==EvalType.NUM)
+            return this.value1.degree()*this.value2.approximate().numValue().intValue();
+        }
+        throw new IllegalSyntaxException("Illegal operator on "+this.toString());
+    }
 }

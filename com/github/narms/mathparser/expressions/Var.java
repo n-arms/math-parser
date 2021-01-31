@@ -74,4 +74,14 @@ public class Var extends ExpressionSyntax {
     public Output approximate(){
         return this.getValue();
     }
+
+    @Override
+    public ExpressionSyntax normalize(){
+        return this;
+    }
+
+    @Override
+    public int degree(){
+        return 1;
+    }
 }
