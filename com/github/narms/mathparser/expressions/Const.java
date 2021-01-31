@@ -4,19 +4,25 @@ import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
 import com.github.narms.mathparser.Token;
+import com.github.narms.mathparser.output.Bool;
+import com.github.narms.mathparser.output.Num;
+import com.github.narms.mathparser.output.Output;
 
-public class Const extends LiteralSyntax {
-    private double value;
+public class Const extends ExpressionSyntax {
+    private Output value;
     public Const(Token t){
-        this.value = Double.parseDouble(t.getValue());
+        this.value = new Num(Double.parseDouble(t.getValue()));
     }
     public Const(double d){
-        this.value = d;
+        this.value = new Num(d);
+    }
+    public Const(Output o){
+        this.value = o;
     }
 
     @Override
     public ExpressionSyntax derivative(String name){
-        return new Const(0);
+        return new Const(new Num(0));
     }
 
     @Override
@@ -25,7 +31,7 @@ public class Const extends LiteralSyntax {
     }
 
     @Override
-    public boolean defVar(String name, Object value) {
+    public boolean defVar(String name, Output value) {
         return false;
     }
 
@@ -46,16 +52,19 @@ public class Const extends LiteralSyntax {
 
     @Override
     public EvalType evaluatable(){
-        return EvalType.NUM;
+        if (value instanceof Bool){
+            return EvalType.BOOL;
+        }else{
+            return EvalType.NUM;
+        }
     }
 
-    @Override
-    public Object getValue(){
+    public Output getValue(){
         return this.value;
     }
 
     @Override
-    public Object approximate(){
+    public Output approximate(){
         return this.value;
     }
 }

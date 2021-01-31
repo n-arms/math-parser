@@ -4,6 +4,7 @@ import com.github.narms.mathparser.EvalType;
 import com.github.narms.mathparser.ExpressionSyntax;
 import com.github.narms.mathparser.SyntaxType;
 import com.github.narms.mathparser.exceptions.IllegalSyntaxException;
+import com.github.narms.mathparser.output.Output;
 
 public class BinOp extends ExpressionSyntax {
     private String operator;
@@ -17,13 +18,10 @@ public class BinOp extends ExpressionSyntax {
 
     @Override
     public ExpressionSyntax derivative(String variable){
-        if (this.operator.equals("+") || this.operator.equals("-")){
-            return new BinOp(this.operator, this.value1.derivative(variable), this.value2.derivative(variable));
-        }else if (this.operator.equals("*")){
-            return new BinOp("+", new BinOp("*", this.value1, this.value2.derivative(variable)), 
-            new BinOp("*", this.value2, this.value1.derivative(variable)));
-        }else if (this.operator.equals("/")){
-            return new BinOp("/", new BinOp("-", new BinOp("*", this.value1.derivative(variable), this.value2), new BinOp("*", this.value2.derivative(variable), this.value1)), new BinOp("*", this.value2, this.value2));
+        if (this.operator.equals("^")){
+            
+        }else{
+
         }
         throw new IllegalArgumentException();
     }
@@ -34,7 +32,7 @@ public class BinOp extends ExpressionSyntax {
     }
 
     @Override
-    public boolean defVar(String name, Object value) {
+    public boolean defVar(String name, Output value) {
         boolean left = this.value1.defVar(name, value);
         boolean right = this.value2.defVar(name, value);
         return  left || right;
@@ -56,9 +54,9 @@ public class BinOp extends ExpressionSyntax {
         this.value2 = this.value2.reduce();
         switch (this.evaluatable()){
             case BOOL:
-            return new BoolConst((Boolean)this.approximate());
+            return new Const(this.approximate());
             case NUM:
-            return new Const((Double)this.approximate());
+            return new Const(this.approximate());
             default:
             return this;
         }
@@ -94,32 +92,24 @@ public class BinOp extends ExpressionSyntax {
     }
 
     @Override
-    public Object approximate(){
+    public Output approximate(){
         if (this.evaluatable().equals(EvalType.HARDTREE))
             throw new IllegalSyntaxException("Undefined variable in "+this.toString());
         return eval();
     }
 
-    private Object eval(){
+    private Output eval(){
         switch(this.operator){
-            case "+":
-            return (Double)this.value1.approximate() + (Double)this.value2.approximate();
-            case "-":
-            return (Double)this.value1.approximate() - (Double)this.value2.approximate();
-            case "/":
-            return (Double)this.value1.approximate() / (Double)this.value2.approximate();
-            case "*":
-            return (Double)this.value1.approximate() * (Double)this.value2.approximate();
             case "^":
-            return Math.pow((Double)this.value1.approximate(), (Double)this.value2.approximate());
+            return this.value1.approximate().applyBin("^", this.value2.approximate());
             case "|":
-            return (Boolean)this.value1.approximate() || (Boolean)this.value2.approximate();
+            return this.value1.approximate().applyBin("|", this.value2.approximate());
             case "&":
-            return (Boolean)this.value1.approximate() && (Boolean)this.value2.approximate();
+            return this.value1.approximate().applyBin("&", this.value2.approximate());
             case ">":
-            return (Double)this.value1.approximate() > (Double)this.value2.approximate();
+            return this.value1.approximate().applyBin(">", this.value2.approximate());
             case "<":
-            return (Double)this.value1.approximate() < (Double)this.value2.approximate();
+            return this.value1.approximate().applyBin("<", this.value2.approximate());
             default:
             throw new IllegalSyntaxException("Illegal operator on "+this.toString());
         }
