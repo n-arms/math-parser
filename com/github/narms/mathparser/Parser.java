@@ -77,7 +77,28 @@ public class Parser {
     }
 
     public static ArrayList<Syntax> parseFactor(ArrayList<Syntax> structure){
-        int i = 1;
+        int i = 0;
+        if (structure.size() > 1 && structure.get(i) instanceof ExpressionSyntax && structure.get(i+1) instanceof ExpressionSyntax){
+            structure.set(i, new PolyOp((ExpressionSyntax)structure.get(i), "*"));
+            ((PolyOp)structure.get(i)).addValue((ExpressionSyntax)structure.get(i+1));
+            structure.remove(i+1);
+            int polyindex = i;
+            i++;
+            while ((i<structure.size() && structure.get(i) instanceof ExpressionSyntax) || (i<structure.size()-1 && (match(structure.get(i), "*") || match(structure.get(i), "/")))){
+                if (match(structure.get(i), "*")){
+                    ((PolyOp)structure.get(polyindex)).addValue((ExpressionSyntax)structure.get(i+1));
+                    structure.remove(i+1);
+                    structure.remove(i);
+                }else if (match(structure.get(i), "/")){
+                    ((PolyOp)structure.get(polyindex)).addValue(new UnaryOp("1/", (ExpressionSyntax)structure.get(i+1)));
+                    structure.remove(i+1);
+                    structure.remove(i);
+                }else{
+                    ((PolyOp)structure.get(polyindex)).addValue((ExpressionSyntax)structure.get(i));
+                    structure.remove(i);
+                }
+            }
+        }
         while(i<structure.size()-1){
             if (match(structure.get(i), "*") || match(structure.get(i), "/")){
                 
@@ -91,16 +112,41 @@ public class Parser {
                 structure.remove(i+1);
                 structure.remove(i-1);
                 int polyindex = i-1;
-                while (i<structure.size()-1 && (match(structure.get(i), "*") || match(structure.get(i), "/"))){
+                while ((i<structure.size() && structure.get(i) instanceof ExpressionSyntax) || (i<structure.size()-1 && (match(structure.get(i), "*") || match(structure.get(i), "/")))){
                     if (match(structure.get(i), "*")){
                         ((PolyOp)structure.get(polyindex)).addValue((ExpressionSyntax)structure.get(i+1));
-                    }else{
+                        structure.remove(i+1);
+                        structure.remove(i);
+                    }else if (match(structure.get(i), "/")){
                         ((PolyOp)structure.get(polyindex)).addValue(new UnaryOp("1/", (ExpressionSyntax)structure.get(i+1)));
+                        structure.remove(i+1);
+                        structure.remove(i);
+                    }else{
+                        ((PolyOp)structure.get(polyindex)).addValue((ExpressionSyntax)structure.get(i));
+                        structure.remove(i);
                     }
-                    structure.remove(i+1);
-                    structure.remove(i);
                 }
 
+            }else if (structure.get(i) instanceof ExpressionSyntax && structure.get(i+1) instanceof ExpressionSyntax){
+                structure.set(i, new PolyOp((ExpressionSyntax)structure.get(i), "*"));
+                ((PolyOp)structure.get(i)).addValue((ExpressionSyntax)structure.get(i+1));
+                structure.remove(i+1);
+                int polyindex = i;
+                i++;
+                while ((i<structure.size() && structure.get(i) instanceof ExpressionSyntax) || (i<structure.size()-1 && (match(structure.get(i), "*") || match(structure.get(i), "/")))){
+                    if (match(structure.get(i), "*")){
+                        ((PolyOp)structure.get(polyindex)).addValue((ExpressionSyntax)structure.get(i+1));
+                        structure.remove(i+1);
+                        structure.remove(i);
+                    }else if (match(structure.get(i), "/")){
+                        ((PolyOp)structure.get(polyindex)).addValue(new UnaryOp("1/", (ExpressionSyntax)structure.get(i+1)));
+                        structure.remove(i+1);
+                        structure.remove(i);
+                    }else{
+                        ((PolyOp)structure.get(polyindex)).addValue((ExpressionSyntax)structure.get(i));
+                        structure.remove(i);
+                    }
+                }
             }else{i++; }
         }
         return structure;
