@@ -126,4 +126,14 @@ public class UnaryOp extends ExpressionSyntax {
         return this.contents.degree();
     }
 
+    @Override
+    public int unboundedVariables(){
+        return this.contents.unboundedVariables();
+    }
+
+    @Override
+    public ExpressionSyntax copy(){
+        return new UnaryOp(this.operator, this.contents.copy());
+    }
+
 }

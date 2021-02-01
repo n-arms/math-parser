@@ -7,4 +7,5 @@ public abstract class Output {
     public abstract Double[] complexValue();
     public abstract Output applyBin(String op, Output other); //use with ops +, *, |, &, ^, >, <
     public abstract Output apply(String op); //use with ops ~, 1/, -
+    public abstract Output copy();
 }

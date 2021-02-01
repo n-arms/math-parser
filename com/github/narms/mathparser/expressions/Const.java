@@ -75,6 +75,16 @@ public class Const extends ExpressionSyntax {
 
     @Override
     public int degree(){
-        return 1;
+        return 0;
+    }
+
+    @Override
+    public int unboundedVariables(){
+        return 0;
+    }
+
+    @Override
+    public ExpressionSyntax copy(){
+        return new Const(this.value.copy());
     }
 }

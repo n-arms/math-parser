@@ -101,4 +101,9 @@ public class Complex extends Output{
     public Output naturalLog(){
         return new Complex(Math.log(this.magnitude().numValue()), this.arg().numValue());
     }
+
+    @Override
+    public Output copy(){
+        return new Complex(value[0], value[1]);
+    }
 }

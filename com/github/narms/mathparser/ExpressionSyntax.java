@@ -12,4 +12,6 @@ public abstract class ExpressionSyntax extends Syntax{
     public abstract EvalType evaluatable();
     public abstract ExpressionSyntax normalize();
     public abstract int degree();
+    public abstract int unboundedVariables();
+    public abstract ExpressionSyntax copy();
 }

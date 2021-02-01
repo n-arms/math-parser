@@ -49,5 +49,9 @@ public class Bool extends Output{
         return new Bool(!this.value);
         throw new IllegalTypeException("Cannot perform op '"+op+"' Bool.java");
     }
-    
+
+    @Override
+    public Output copy(){
+        return new Bool(this.value);
+    }
 }

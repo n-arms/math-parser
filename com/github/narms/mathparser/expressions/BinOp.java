@@ -132,4 +132,14 @@ public class BinOp extends ExpressionSyntax {
         }
         throw new IllegalSyntaxException("Illegal operator on "+this.toString());
     }
+
+    @Override
+    public int unboundedVariables(){
+        return value1.unboundedVariables() + value2.unboundedVariables();
+    }
+
+    @Override
+    public ExpressionSyntax copy(){
+        return new BinOp(this.operator, this.value1.copy(), this.value2.copy());
+    }
 }

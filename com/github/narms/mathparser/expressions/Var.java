@@ -84,4 +84,17 @@ public class Var extends ExpressionSyntax {
     public int degree(){
         return 1;
     }
+
+    @Override
+    public int unboundedVariables(){
+        return defined ? 0 : 1;
+    }
+
+    @Override
+    public ExpressionSyntax copy(){
+        Var output = new Var(this.name);
+        if (defined)
+        output.defVar(this.name, this.value.copy());
+        return output;
+    }
 }

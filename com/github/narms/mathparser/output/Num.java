@@ -88,4 +88,9 @@ public class Num extends Output{
             throw new IllegalTypeException("Illegal op '"+op+"' on Num.java");
         }
     }
+
+    @Override
+    public Output copy(){
+        return new Num(this.value);
+    }
 }

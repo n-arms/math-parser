@@ -31,6 +31,13 @@ public class PolyOp extends ExpressionSyntax {
         this.operator = operator;
     }
 
+    public PolyOp(String operator, ExpressionSyntax left, ExpressionSyntax right){
+        this.operator = operator;
+        this.values = new ArrayList<ExpressionSyntax>();
+        this.values.add(left);
+        this.values.add(right);
+    }
+
     public void addValue(ExpressionSyntax value){
         values.add(value);
     }
@@ -203,8 +210,18 @@ public class PolyOp extends ExpressionSyntax {
             es = es.reduce();
             es = es.normalize();
         }
+        if (operator.equals("*")){
+            for (int i = 0; i<values.size(); i++){
+                if (values.size() > 1){
+                    values.add(distribute(values.get(0), values.get(1)));
+                values.remove(0);
+                values.remove(0);
+                }
+            }
+        }
         
-        return this.reduce(); //TODO
+        groupLikeTerms();
+        return this.reduce(); //TODO, currently my method of generating sublists is misinformed at best
     }
 
     @Override
@@ -223,5 +240,104 @@ public class PolyOp extends ExpressionSyntax {
             default:
             throw new IllegalSyntaxException("Illegal op "+this.operator+" on polyOp "+this);
         }
+    }
+
+    private void groupLikeTerms(){
+        return; //TODO: HA fools, you thought i would ever actually implement this
+    }
+
+    private ExpressionSyntax distribute(ExpressionSyntax a, ExpressionSyntax b){
+        ArrayList<ExpressionSyntax> terms = new ArrayList<ExpressionSyntax>();
+        if (a instanceof PolyOp){
+            switch (((PolyOp)a).getOperator()){
+                case "+":
+                if (b instanceof PolyOp){
+                    switch (((PolyOp)b).getOperator()){
+                        case "+":
+                        for (ExpressionSyntax i: ((PolyOp)a).getTerms()){
+                            for (ExpressionSyntax j: ((PolyOp)b).getTerms())
+                            terms.add(new PolyOp("*", i, j));
+                        }
+                        return new PolyOp(terms, "+");
+                        case "*":
+                        for (ExpressionSyntax i: ((PolyOp)a).getTerms()){
+                            terms.add(b.copy());
+                            ((PolyOp)terms.get(terms.size()-1)).addValue(i);
+                        }
+                        return new PolyOp(terms, "+");
+                        default:
+                        throw new IllegalSyntaxException("Illegal op while distrbuting "+a+", "+b);
+                    }
+                }else{
+                    for (ExpressionSyntax es: ((PolyOp)a).getTerms())
+                    terms.add(new PolyOp("*", es, b));
+                    return new PolyOp(terms, "+");
+                }
+                case "*":
+                if (b instanceof PolyOp){
+                    switch (((PolyOp)b).getOperator()){
+                        case "+":
+                        for (ExpressionSyntax i: ((PolyOp)b).getTerms()){
+                            terms.add(a.copy());
+                            ((PolyOp)terms.get(terms.size()-1)).addValue(i);
+                        }
+                        return new PolyOp(terms, "+");
+                        case "*":
+                        for (ExpressionSyntax i: ((PolyOp)b).getTerms()){
+                            ((PolyOp)a).addValue(i);
+                        }
+                        return a;
+                        default:
+                        throw new IllegalSyntaxException("Illegal op while distrbuting "+a+", "+b);
+                    }
+                }else{
+                    ((PolyOp)a).addValue(b);
+                    return a;
+                }
+                default:
+                throw new IllegalSyntaxException("Illegal op while distrbuting "+a+", "+b);
+            }
+        }else{
+            if (b instanceof PolyOp){
+                switch (((PolyOp)b).getOperator()){
+                    case "+":
+                    for (ExpressionSyntax i: ((PolyOp)b).getTerms()){
+                        terms.add(new PolyOp("*", i, a));
+                    }
+                    return new PolyOp(terms, "+");
+                    case "*":
+                    ((PolyOp)b).addValue(a);
+                    return b;
+                    default:
+                    throw new IllegalSyntaxException("Illegal op while distributing "+a+", "+b);
+                }
+            }else{
+                return new PolyOp("*", a, b);
+            }
+        }
+    }
+
+
+    public int unboundedVariables(){
+        int total = 0;
+        for (ExpressionSyntax es: values)
+        total += es.unboundedVariables();
+        return total;
+    }
+
+    public String getOperator(){
+        return this.operator;
+    }
+
+    public List<ExpressionSyntax> getTerms(){
+        return values;
+    }
+
+    @Override
+    public ExpressionSyntax copy(){
+        ArrayList<ExpressionSyntax> output = new ArrayList<ExpressionSyntax>();
+        for (ExpressionSyntax es: values)
+        output.add(es.copy());
+        return new PolyOp(output, this.operator);
     }
 }
