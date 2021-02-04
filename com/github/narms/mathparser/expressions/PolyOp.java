@@ -26,7 +26,7 @@ public class PolyOp extends ExpressionSyntax {
         this.operator = operator;
     }
 
-    public PolyOp(ArrayList<ExpressionSyntax> values, String operator){
+    public PolyOp(List<ExpressionSyntax> values, String operator){
         this.values = values;
         this.operator = operator;
     }
@@ -127,9 +127,42 @@ public class PolyOp extends ExpressionSyntax {
                 reduced.add(values.get(i));
             }
         }
-        if (reduced.size() > 1)
-        return new PolyOp(reduced, this.operator);
+        if (reduced.size() <= 1)
         return reduced.get(0);
+        Const zero = new Const(0D);
+        Const one = new Const(1D);
+        int i = 0;
+        switch (operator){
+            case "+":
+            while (i < reduced.size()){
+                if (reduced.get(i).equals(zero)){
+                    reduced.remove(i);
+                }else{
+                    i++;
+                }
+            }
+            if (reduced.size() <= 1)
+            return reduced.get(0);
+            return new PolyOp(reduced, this.operator);
+            case "*":
+            while (i<reduced.size()){
+                if (reduced.get(i).equals(zero)){
+                    return zero;
+                }else if (reduced.get(i).equals(one)){
+                    reduced.remove(i);
+                }else{
+                    i++;
+                }
+            }
+            if (reduced.size() <= 1)
+            return reduced.get(0);
+            return new PolyOp(reduced, this.operator);
+            default:
+            throw new IllegalSyntaxException("Illegal op "+operator+" on "+this);
+        }
+
+        
+        
     }
 
     @Override
@@ -214,14 +247,16 @@ public class PolyOp extends ExpressionSyntax {
             for (int i = 0; i<values.size(); i++){
                 if (values.size() > 1){
                     values.add(distribute(values.get(0), values.get(1)));
-                values.remove(0);
-                values.remove(0);
+                    values.remove(0);
+                    values.remove(0);
                 }
             }
         }
-        
         groupLikeTerms();
-        return this.reduce(); //TODO, currently my method of generating sublists is misinformed at best
+        for (ExpressionSyntax es: values){
+            es = es.reduce();
+        }
+        return this.reduce();
     }
 
     @Override
@@ -339,5 +374,10 @@ public class PolyOp extends ExpressionSyntax {
         for (ExpressionSyntax es: values)
         output.add(es.copy());
         return new PolyOp(output, this.operator);
+    }
+
+    @Override
+    public boolean equals(ExpressionSyntax e){
+        return false;//TODO
     }
 }

@@ -136,4 +136,13 @@ public class UnaryOp extends ExpressionSyntax {
         return new UnaryOp(this.operator, this.contents.copy());
     }
 
+    @Override
+    public boolean equals(ExpressionSyntax e){
+        return false;//TODO
+    }
+
+    public ExpressionSyntax getContents(){
+        return this.contents;
+    }
+
 }

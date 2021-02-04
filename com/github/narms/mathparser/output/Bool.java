@@ -54,4 +54,9 @@ public class Bool extends Output{
     public Output copy(){
         return new Bool(this.value);
     }
+
+    @Override
+    public boolean equals(Output o){
+        return (o instanceof Bool) && (o.boolValue().equals(value));
+    }
 }

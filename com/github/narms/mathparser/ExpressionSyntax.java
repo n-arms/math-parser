@@ -14,4 +14,5 @@ public abstract class ExpressionSyntax extends Syntax{
     public abstract int degree();
     public abstract int unboundedVariables();
     public abstract ExpressionSyntax copy();
+    public abstract boolean equals(ExpressionSyntax e);
 }

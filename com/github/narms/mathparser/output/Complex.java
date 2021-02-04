@@ -106,4 +106,14 @@ public class Complex extends Output{
     public Output copy(){
         return new Complex(value[0], value[1]);
     }
+
+    @Override
+    public boolean equals(Output o){
+        if (o instanceof Complex){
+            return o.complexValue()[0].equals(this.value[0]) && o.complexValue()[1].equals(this.value[1]);
+        }else if (o instanceof Num){
+            return value[1].equals(0D) && o.numValue().equals(value[0]);
+        }
+        return false;
+    }
 }

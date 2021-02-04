@@ -93,4 +93,9 @@ public class Num extends Output{
     public Output copy(){
         return new Num(this.value);
     }
+
+    @Override
+    public boolean equals(Output o){
+        return ((o instanceof Num) && (o.numValue().equals(this.value))) || ((o instanceof Complex) && (o.complexValue()[0].equals(this.value) && o.complexValue()[1].equals(0D)));
+    }
 }

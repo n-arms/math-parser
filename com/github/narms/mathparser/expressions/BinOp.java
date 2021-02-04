@@ -142,4 +142,9 @@ public class BinOp extends ExpressionSyntax {
     public ExpressionSyntax copy(){
         return new BinOp(this.operator, this.value1.copy(), this.value2.copy());
     }
+
+    @Override
+    public boolean equals(ExpressionSyntax e){
+        return (e instanceof BinOp) && ((BinOp)e).getValue1().equals(value1) && (((BinOp)e).getValue2().equals(value2));
+    }
 }

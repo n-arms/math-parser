@@ -87,4 +87,9 @@ public class Const extends ExpressionSyntax {
     public ExpressionSyntax copy(){
         return new Const(this.value.copy());
     }
+
+    @Override
+    public boolean equals(ExpressionSyntax e){
+        return (e instanceof Const) && (((Const)e).getValue().equals(this.value));
+    }
 }

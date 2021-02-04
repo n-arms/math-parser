@@ -97,4 +97,9 @@ public class Var extends ExpressionSyntax {
         output.defVar(this.name, this.value.copy());
         return output;
     }
+
+    @Override
+    public boolean equals(ExpressionSyntax e){
+        return (e instanceof Var) && (((Var)e).toString().equals(name));
+    }
 }
