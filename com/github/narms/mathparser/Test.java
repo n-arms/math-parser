@@ -16,9 +16,9 @@ public class Test {
         }
         myScanner.close();*/
 
-        ExpressionSyntax a = (ExpressionSyntax)Parser.parseText(Lexer.lex("8"));
-        ExpressionSyntax b = (ExpressionSyntax)Parser.parseText(Lexer.lex("(x+3)*4"));
-        Equation e = new Equation(a, b);
+        ExpressionSyntax l = (ExpressionSyntax)(Parser.parseText(Lexer.lex("x*2")));
+        ExpressionSyntax r = (ExpressionSyntax)(Parser.parseText(Lexer.lex("5")));
+        Equation e = new Equation(l, r);
         System.out.println(e);
         e.solve("x");
         System.out.println(e);
