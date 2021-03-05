@@ -16,7 +16,7 @@ public class Test {
         }
         myScanner.close();*/
 
-        ExpressionSyntax l = (ExpressionSyntax)(Parser.parseText(Lexer.lex("x*2")));
+        ExpressionSyntax l = (ExpressionSyntax)(Parser.parseText(Lexer.lex("x*2+1")));
         ExpressionSyntax r = (ExpressionSyntax)(Parser.parseText(Lexer.lex("5")));
         Equation e = new Equation(l, r);
         System.out.println(e);

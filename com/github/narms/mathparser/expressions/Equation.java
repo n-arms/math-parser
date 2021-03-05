@@ -7,6 +7,7 @@ import com.github.narms.mathparser.Syntax;
 import com.github.narms.mathparser.SyntaxType;
 
 
+
 public class Equation extends Syntax {
     private ExpressionSyntax leftSide;
     private ExpressionSyntax rightSide;
@@ -18,7 +19,7 @@ public class Equation extends Syntax {
 
     public void solve(String target) {
         boolean canReduce = true;
-        while (canReduce && !(leftSide instanceof Var && leftSide.toString().equals(target))){
+        while (canReduce && !(rightSide instanceof Var && rightSide.toString().equals(target))){
             canReduce = reduce(target);
             leftSide = leftSide.reduce();
             rightSide = rightSide.reduce();
@@ -26,11 +27,58 @@ public class Equation extends Syntax {
     }
 
     private boolean reduce(String target){
+        boolean rightDone = purifyRight(target);
+        boolean leftDone = purifyLeft(target);
+        return  leftDone || rightDone;
+    }
+
+    private boolean purifyLeft(String target){
+        leftSide = leftSide.reduce();
+        leftSide = leftSide.normalize();
+
+        if (leftSide instanceof PolyOp){
+            System.out.println("polyop on purify left");
+            String inverseOp;
+            if (((PolyOp)leftSide).getOperator().equals("+")){
+                inverseOp = "-";
+            }else if (((PolyOp)leftSide).getOperator().equals("*")){
+                inverseOp = "1/";
+            }else{
+                throw new IllegalArgumentException("Illegal argument on polyop leftside");
+            }
+
+            rightSide = new PolyOp(rightSide, ((PolyOp)leftSide).getOperator());
+            for (int i = ((PolyOp)leftSide).getTerms().size()-1; i>=0; i--){
+                if (! ((PolyOp)leftSide).getTerms().get(i).hasVar(target)){
+                    ((PolyOp)rightSide).addValue(new UnaryOp(inverseOp, ((PolyOp)leftSide).getTerms().get(i)));
+                    ((PolyOp)leftSide).getTerms().remove(i);
+                }
+            }
+            return true;
+        }else if (leftSide instanceof UnaryOp){
+            System.out.println("unaryop on purify left");
+            rightSide = new UnaryOp(((UnaryOp)leftSide).getOperator(), rightSide);
+            leftSide = ((UnaryOp)leftSide).getContents();
+            return true;
+        }else if (leftSide instanceof Const){
+            System.out.println("const on purify left");
+            return false;
+        }else if (leftSide instanceof Var){
+            System.out.println("var on purify left");
+            return false;
+        }else if (leftSide instanceof BinOp){
+            System.out.println("binop on purify left");
+            throw new IllegalArgumentException("n-arms, you havent implemented this yet");
+        }else{
+            throw new IllegalArgumentException("Illegal type on leftside"+leftSide);
+        }
+    }
+
+    private boolean purifyRight(String target){
         rightSide = rightSide.reduce();
         rightSide = rightSide.normalize();
 
-        
-        if (! rightSide.hasVar(target)){
+        if (rightSide.hasVar(target)){
             ExpressionSyntax temp = leftSide;
             leftSide = rightSide;
             rightSide = temp;
